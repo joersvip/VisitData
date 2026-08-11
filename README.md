@@ -1,33 +1,64 @@
-# React + TypeScript + Vite
+# VisitData Pro - Kejaksaan RI Field Visit Management System
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+Sistem Manajemen Kunjungan & Pengawasan Lapangan Kejaksaan Republik Indonesia berstandar produksi.
 
-Currently, two official plugins are available:
+## 📁 Struktur Platform & Direktori Proyek
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+Proyek ini telah distrukturisasi ke dalam folder platform masing-masing untuk kemudahan pengelolaan dan pemeliharaan:
 
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the Oxlint configuration
-
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
-
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
+```
+VisitData/
+├── 🤖 android/              # Project Native APP Android (Gradle / Android Studio)
+├── 🍏 ios/                  # Project Native APP Apple iOS (Xcode Project)
+├── 🌐 web/                  # Konfigurasi & Modul WEB Admin Dashboard
+├── 📦 src/                  # Kode Sumber Utama (React 19 + TypeScript)
+│   ├── components/
+│   │   ├── admin/           # Komponen Web Admin Dashboard
+│   │   ├── mobile/          # Komponen Full-Screen Android/iOS Mobile App
+│   │   ├── GeotagCamera.tsx
+│   │   ├── SignaturePad.tsx
+│   │   └── VisitMap.tsx
+│   ├── services/            # StorageService & PDF Report Generator
+│   └── types/               # TypeScript Definitions
+├── 📲 VisitDataPro_KejaksaanRI.apk # Built Production APK Android
+└── ⚙️ capacitor.config.ts   # Konfigurasi Capacitor Multi-Platform
 ```
 
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
-# VisitData
+---
+
+## 🚀 Panduan Membuka & Menjalankan
+
+### 1. 🤖 APP Android Native (`android/`)
+* **Lokasi Source Project**: `android/`
+* **File APK Siap Install**: `VisitDataPro_KejaksaanRI.apk`
+* **Perintah Build APK**:
+  ```bash
+  npx cap sync android
+  cd android && ./gradlew assembleDebug
+  ```
+
+### 2. 🍏 APP Apple iOS Native (`ios/`)
+* **Lokasi Source Project**: `ios/`
+* **File Workspace Xcode**: `ios/App/App.xcworkspace`
+* **Perintah Sync iOS**:
+  ```bash
+  npx cap sync ios
+  npx cap open ios   # Membuka otomatis di Xcode (macOS)
+  ```
+
+### 3. 🌐 WEB Admin Dashboard (`web/`)
+* **Lokasi Modul Web**: `web/`
+* **URL Akses Pengetesan Browser**: `http://localhost:5173/?mode=admin`
+* **Perintah Run Web Dev Server**:
+  ```bash
+  npm run dev
+  ```
+* **Perintah Build Web Production**:
+  ```bash
+  npm run build
+  ```
+
+---
+
+### 🛡️ Lisensi & Hak Cipta
+© 2026 Inspektorat Kejaksaan Republik Indonesia. Hak Cipta Dilindungi Undang-Undang.

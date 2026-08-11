@@ -1,0 +1,15 @@
+{
+  "appName": "VisitData Pro - Web Admin Dashboard",
+  "institution": "Kejaksaan Republik Indonesia",
+  "version": "2.0.0-GOLD",
+  "platform": "WEB_ADMIN",
+  "defaultRoute": "/?mode=admin",
+  "features": {
+    "monitoring": true,
+    "scheduler": true,
+    "officerManagement": true,
+    "reportsPDF": true,
+    "exportExcel": true,
+    "interactiveMap": true
+  }
+}
