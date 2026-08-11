@@ -254,6 +254,16 @@ export const MobileApp: React.FC<MobileAppProps> = ({
               </div>
 
               {/* Active / Next Visit Hero Card */}
+              {!selectedRencana && (
+                <div className="bg-slate-900/90 border border-amber-500/30 rounded-2xl p-6 text-center space-y-2 shadow-lg">
+                  <CalendarIcon className="w-10 h-10 text-amber-400 mx-auto opacity-80" />
+                  <h3 className="text-sm font-bold text-white">Belum Ada Jadwal Inspeksi Lapangan</h3>
+                  <p className="text-xs text-slate-400 max-w-xs mx-auto">
+                    Jadwal kunjungan baru akan dikirimkan secara otomatis dari Dashboard Admin Kejaksaan RI.
+                  </p>
+                </div>
+              )}
+
               {selectedRencana && (
                 <div className="bg-gradient-to-br from-amber-950/80 via-slate-900 to-slate-950 border border-amber-500/45 rounded-2xl p-4 shadow-xl relative overflow-hidden group">
                   <div className="flex items-center justify-between mb-2">
@@ -348,6 +358,11 @@ export const MobileApp: React.FC<MobileAppProps> = ({
               {/* List of Planned Visits */}
               <div className="space-y-2.5">
                 <span className="text-xs font-bold text-slate-300 px-1 block">Daftar Rencana Kunjungan:</span>
+                {rencanas.length === 0 && (
+                  <div className="bg-slate-900/80 p-5 rounded-2xl border border-slate-800 text-center text-slate-400 text-xs">
+                    Belum ada rencana kunjungan yang ditugaskan.
+                  </div>
+                )}
                 {rencanas.map((r) => {
                   const isSelected = r.id === activeRencanaId;
                   return (

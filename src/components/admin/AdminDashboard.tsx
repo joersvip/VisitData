@@ -660,6 +660,15 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-800 text-slate-200">
+                {filteredRencanas.length === 0 && (
+                  <tr>
+                    <td colSpan={6} className="p-8 text-center text-slate-400">
+                      <Calendar className="w-10 h-10 mx-auto text-slate-600 mb-2" />
+                      <p className="font-bold text-slate-300">Belum Ada Rencana Kunjungan</p>
+                      <p className="text-xs text-slate-500 mt-1">Klik tombol "+ Buat Rencana Kunjungan" untuk menambahkan jadwal inspeksi baru.</p>
+                    </td>
+                  </tr>
+                )}
                 {filteredRencanas.map((r) => {
                   const assigned = petugasList.filter((p) => r.petugasIds?.includes(p.id));
                   return (
