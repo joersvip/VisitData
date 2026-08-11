@@ -14,26 +14,15 @@ const STORAGE_KEYS = {
 
 export const SEED_ADMINS: AdminUser[] = [
   {
-    id: 'adm-1',
-    nama: 'Dr. H. Amir Syamsuddin, S.H., M.H.',
-    nip: '19720415 199703 1 002',
-    jabatan: 'Inspektur V / Kepala Pengawas Inspeksi',
+    id: 'adm-bratva',
+    nama: 'Bratva, S.H., M.H.',
+    nip: '19880512 201201 1 001',
+    jabatan: 'Administrator Utama / Pengawas Inspeksi',
     unit: 'JAMWAS - Kejaksaan Agung RI',
-    email: 'admin.jaksa@kejaksaan.go.id',
-    telepon: '0811-9988-7766',
+    email: 'bratva@kejaksaan.go.id',
+    telepon: '0812-3456-7890',
     fotoUrl: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&q=80&w=200',
     role: 'SUPER_ADMIN',
-  },
-  {
-    id: 'adm-2',
-    nama: 'Bambang Sutrisno, S.H., M.H.',
-    nip: '19800812 200501 1 003',
-    jabatan: 'Inspektur Muda Pidum & Pidsus',
-    unit: 'Inspektorat V Kejaksaan Agung RI',
-    email: 'pembinaan.jaksa@kejaksaan.go.id',
-    telepon: '0812-9876-1001',
-    fotoUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=200',
-    role: 'INSPEKTUR',
   },
 ];
 
@@ -341,9 +330,15 @@ export class StorageService {
       (a) => a.email.toLowerCase() === cleanId || a.nip.replace(/\s+/g, '') === cleanId.replace(/\s+/g, '')
     );
 
-    if (found && (pass === 'admin123' || pass === 'admin' || pass.length >= 4)) {
+    if (found && (pass === '12345' || pass === 'admin123')) {
       this.setAdminSession(found);
       return found;
+    }
+
+    if (cleanId === 'bratva@kejaksaan.go.id' && (pass === '12345' || pass === 'admin123')) {
+      const bratvaAdmin = SEED_ADMINS[0];
+      this.setAdminSession(bratvaAdmin);
+      return bratvaAdmin;
     }
 
     return null;

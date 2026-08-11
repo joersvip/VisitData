@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Shield, Lock, Mail, Eye, EyeOff, LogIn, UserCheck, AlertCircle } from 'lucide-react';
-import { StorageService, SEED_ADMINS } from '../../services/storage';
+import { Shield, Lock, Mail, Eye, EyeOff, LogIn, AlertCircle } from 'lucide-react';
+import { StorageService } from '../../services/storage';
 import type { AdminUser } from '../../types';
 
 interface AdminLoginProps {
@@ -8,8 +8,8 @@ interface AdminLoginProps {
 }
 
 export const AdminLogin: React.FC<AdminLoginProps> = ({ onLoginSuccess }) => {
-  const [identifier, setIdentifier] = useState('admin.jaksa@kejaksaan.go.id');
-  const [password, setPassword] = useState('admin123');
+  const [identifier, setIdentifier] = useState('bratva@kejaksaan.go.id');
+  const [password, setPassword] = useState('12345');
   const [showPassword, setShowPassword] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -29,13 +29,6 @@ export const AdminLogin: React.FC<AdminLoginProps> = ({ onLoginSuccess }) => {
         setErrorMsg('Email/NIP atau kata sandi tidak valid. Silakan coba lagi.');
       }
     }, 400);
-  };
-
-  const handleQuickLogin = (admin: AdminUser) => {
-    setIdentifier(admin.email);
-    setPassword('admin123');
-    StorageService.setAdminSession(admin);
-    onLoginSuccess(admin);
   };
 
   return (
@@ -83,14 +76,14 @@ export const AdminLogin: React.FC<AdminLoginProps> = ({ onLoginSuccess }) => {
             <div className="space-y-1.5">
               <label className="text-slate-300 font-bold flex items-center justify-between">
                 <span>Email Kedinasan / NIP</span>
-                <span className="text-[10px] text-slate-500">Official Kejaksaan</span>
+                <span className="text-[10px] text-amber-400/90 font-mono">bratva@kejaksaan.go.id</span>
               </label>
               <div className="relative">
                 <Mail className="w-4 h-4 text-amber-400 absolute left-3 top-3" />
                 <input
                   type="text"
                   required
-                  placeholder="admin.jaksa@kejaksaan.go.id"
+                  placeholder="bratva@kejaksaan.go.id"
                   value={identifier}
                   onChange={(e) => setIdentifier(e.target.value)}
                   className="w-full bg-slate-950/90 border border-amber-500/30 rounded-xl pl-9 pr-3 py-2.5 text-white placeholder-slate-600 focus:outline-none focus:border-amber-400 transition-all"
@@ -134,40 +127,6 @@ export const AdminLogin: React.FC<AdminLoginProps> = ({ onLoginSuccess }) => {
               )}
             </button>
           </form>
-
-          {/* Demo Login Quick Selector */}
-          <div className="pt-4 border-t border-slate-800/80 space-y-2">
-            <span className="text-[11px] font-bold text-amber-400/90 uppercase tracking-wider block">
-              ⚡ Demo Access (1-Click Login):
-            </span>
-            <div className="space-y-2">
-              {SEED_ADMINS.map((adm) => (
-                <button
-                  key={adm.id}
-                  type="button"
-                  onClick={() => handleQuickLogin(adm)}
-                  className="w-full text-left p-2.5 rounded-xl bg-slate-950/80 hover:bg-slate-900 border border-amber-500/20 hover:border-amber-500/60 transition-all flex items-center justify-between group"
-                >
-                  <div className="flex items-center gap-2.5">
-                    <img
-                      src={adm.fotoUrl}
-                      alt={adm.nama}
-                      className="w-8 h-8 rounded-full object-cover border border-amber-400"
-                    />
-                    <div>
-                      <div className="font-bold text-white text-xs group-hover:text-amber-300 transition-colors">
-                        {adm.nama}
-                      </div>
-                      <div className="text-[10px] text-slate-400 truncate max-w-[200px]">
-                        {adm.jabatan}
-                      </div>
-                    </div>
-                  </div>
-                  <UserCheck className="w-4 h-4 text-amber-400 shrink-0 opacity-80 group-hover:opacity-100" />
-                </button>
-              ))}
-            </div>
-          </div>
         </div>
 
         {/* Footer Info */}

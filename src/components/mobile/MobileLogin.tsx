@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Shield, Lock, Mail, Eye, EyeOff, LogIn, UserCheck, AlertCircle } from 'lucide-react';
+import { Shield, Lock, Mail, Eye, EyeOff, LogIn, AlertCircle } from 'lucide-react';
 import { StorageService } from '../../services/storage';
 import type { Petugas } from '../../types';
 
@@ -43,13 +43,6 @@ export const MobileLogin: React.FC<MobileLoginProps> = ({ petugasList, onLoginSu
         setErrorMsg('Email/NIP atau PIN tidak valid. Coba lagi.');
       }
     }, 400);
-  };
-
-  const handleQuickLogin = (p: Petugas) => {
-    setIdentifier(p.email);
-    setPassword('123456');
-    StorageService.setOfficerSession(p);
-    onLoginSuccess(p);
   };
 
   return (
@@ -141,40 +134,6 @@ export const MobileLogin: React.FC<MobileLoginProps> = ({ petugasList, onLoginSu
             )}
           </button>
         </form>
-
-        {/* Quick Officer Selector */}
-        <div className="pt-3 border-t border-slate-800 space-y-2">
-          <span className="text-[10px] font-extrabold text-amber-400/90 uppercase tracking-wider block">
-            ⚡ Pilih Akun Petugas Lapangan (Quick Login):
-          </span>
-          <div className="space-y-1.5 max-h-36 overflow-y-auto pr-1">
-            {petugasList.map((p) => (
-              <button
-                key={p.id}
-                type="button"
-                onClick={() => handleQuickLogin(p)}
-                className="w-full text-left p-2 rounded-xl bg-slate-950/80 hover:bg-slate-900 border border-amber-500/20 hover:border-amber-500/50 transition-all flex items-center justify-between group"
-              >
-                <div className="flex items-center gap-2">
-                  <img
-                    src={p.fotoUrl}
-                    alt={p.nama}
-                    className="w-7 h-7 rounded-full object-cover border border-amber-400"
-                  />
-                  <div>
-                    <div className="font-bold text-white text-[11px] group-hover:text-amber-300">
-                      {p.nama}
-                    </div>
-                    <div className="text-[9px] text-slate-400 truncate max-w-[170px]">
-                      {p.jabatan}
-                    </div>
-                  </div>
-                </div>
-                <UserCheck className="w-3.5 h-3.5 text-amber-400 shrink-0" />
-              </button>
-            ))}
-          </div>
-        </div>
       </div>
 
       {/* Footer Info */}
