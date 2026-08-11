@@ -157,6 +157,23 @@ body {
   overflow: hidden;
 }
 
+@media (max-width: 640px) {
+  .phone-simulator-container {
+    padding: 0;
+    min-height: calc(100vh - 60px);
+  }
+  .phone-frame {
+    max-width: 100%;
+    height: calc(100vh - 60px);
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+  }
+  .phone-notch {
+    display: none;
+  }
+}
+
 .phone-notch {
   width: 130px;
   height: 26px;

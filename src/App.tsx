@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Capacitor } from '@capacitor/core';
 import { Header } from './components/Header';
 import { MobileApp } from './components/mobile/MobileApp';
 import { AdminDashboard } from './components/admin/AdminDashboard';
@@ -6,8 +7,23 @@ import { StorageService } from './services/storage';
 import type { Petugas, RencanaKunjungan, Kunjungan, HistoriLog } from './types';
 import confetti from 'canvas-confetti';
 
+const detectInitialDevice = (): 'MOBILE' | 'ADMIN' => {
+  if (Capacitor.isNativePlatform()) {
+    return 'MOBILE';
+  }
+  const isMobileUA = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+    navigator.userAgent
+  );
+  const isSmallScreen = window.innerWidth < 768;
+  if (isMobileUA || isSmallScreen) {
+    return 'MOBILE';
+  }
+  return 'ADMIN';
+};
+
 export const App: React.FC = () => {
-  const [viewMode, setViewMode] = useState<'MOBILE' | 'ADMIN'>('MOBILE');
+  const [viewMode, setViewMode] = useState<'MOBILE' | 'ADMIN'>(detectInitialDevice);
+  const [hasManuallyToggled, setHasManuallyToggled] = useState<boolean>(false);
   const [isOnline, setIsOnline] = useState<boolean>(true);
 
   // State data
@@ -28,7 +44,22 @@ export const App: React.FC = () => {
   useEffect(() => {
     StorageService.initStorage();
     refreshAllData();
-  }, []);
+
+    const handleResize = () => {
+      if (!hasManuallyToggled && !Capacitor.isNativePlatform()) {
+        const isSmallScreen = window.innerWidth < 768;
+        setViewMode(isSmallScreen ? 'MOBILE' : 'ADMIN');
+      }
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, [hasManuallyToggled]);
+
+  const handleSetViewMode = (mode: 'MOBILE' | 'ADMIN') => {
+    setHasManuallyToggled(true);
+    setViewMode(mode);
+  };
 
   const handleSync = () => {
     if (!isOnline) return;
@@ -49,7 +80,7 @@ export const App: React.FC = () => {
       {/* Top Header Navigation */}
       <Header
         viewMode={viewMode}
-        setViewMode={setViewMode}
+        setViewMode={handleSetViewMode}
         isOnline={isOnline}
         setIsOnline={setIsOnline}
         onSync={handleSync}
