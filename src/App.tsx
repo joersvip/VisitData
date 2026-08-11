@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Capacitor } from '@capacitor/core';
 import { MobileApp } from './components/mobile/MobileApp';
+import { MobileLogin } from './components/mobile/MobileLogin';
 import { AdminDashboard } from './components/admin/AdminDashboard';
 import { AdminLogin } from './components/admin/AdminLogin';
 import { StorageService } from './services/storage';
@@ -31,6 +32,7 @@ const getInitialViewMode = (): 'MOBILE' | 'ADMIN' => {
 export const App: React.FC = () => {
   const [viewMode, setViewMode] = useState<'MOBILE' | 'ADMIN'>(getInitialViewMode);
   const [currentAdmin, setCurrentAdmin] = useState<AdminUser | null>(null);
+  const [currentOfficer, setCurrentOfficer] = useState<Petugas | null>(null);
 
   // State data
   const [petugasList, setPetugasList] = useState<Petugas[]>([]);
@@ -44,6 +46,7 @@ export const App: React.FC = () => {
     setKunjungans(StorageService.getKunjungan());
     setLogs(StorageService.getLogs());
     setCurrentAdmin(StorageService.getAdminSession());
+    setCurrentOfficer(StorageService.getOfficerSession());
   };
 
   useEffect(() => {
@@ -63,6 +66,11 @@ export const App: React.FC = () => {
     setCurrentAdmin(null);
   };
 
+  const handleOfficerLogout = () => {
+    StorageService.clearOfficerSession();
+    setCurrentOfficer(null);
+  };
+
   return (
     <div
       className={`bg-[#090d16] text-slate-100 flex flex-col selection:bg-blue-500 selection:text-white ${
@@ -72,14 +80,24 @@ export const App: React.FC = () => {
       {/* Main View Container */}
       <main className="flex-1 flex flex-col overflow-hidden">
         {viewMode === 'MOBILE' ? (
-          <MobileApp
-            petugasList={petugasList}
-            rencanas={rencanas}
-            kunjungans={kunjungans}
-            logs={logs}
-            isOnline={true}
-            onRefreshData={refreshAllData}
-          />
+          !currentOfficer ? (
+            <MobileLogin
+              petugasList={petugasList}
+              onLoginSuccess={(officer) => setCurrentOfficer(officer)}
+            />
+          ) : (
+            <MobileApp
+              petugasList={petugasList}
+              rencanas={rencanas}
+              kunjungans={kunjungans}
+              logs={logs}
+              isOnline={true}
+              currentOfficer={currentOfficer}
+              onLogout={handleOfficerLogout}
+              onSelectOfficer={(officer) => setCurrentOfficer(officer)}
+              onRefreshData={refreshAllData}
+            />
+          )
         ) : !currentAdmin ? (
           <AdminLogin onLoginSuccess={(admin) => setCurrentAdmin(admin)} />
         ) : (

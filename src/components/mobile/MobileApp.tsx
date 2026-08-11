@@ -17,6 +17,12 @@ import {
   Sparkles,
   Camera,
   PenTool,
+  User,
+  LogOut,
+  Mail,
+  Phone,
+  Shield,
+  UserCheck,
 } from 'lucide-react';
 import type {
   Petugas,
@@ -37,6 +43,9 @@ interface MobileAppProps {
   kunjungans: Kunjungan[];
   logs: HistoriLog[];
   isOnline: boolean;
+  currentOfficer?: Petugas | null;
+  onLogout?: () => void;
+  onSelectOfficer?: (officer: Petugas) => void;
   onRefreshData: () => void;
 }
 
@@ -46,11 +55,15 @@ export const MobileApp: React.FC<MobileAppProps> = ({
   kunjungans,
   logs,
   isOnline,
+  currentOfficer,
+  onLogout,
+  onSelectOfficer,
   onRefreshData,
 }) => {
-  const [activeTab, setActiveTab] = useState<'HOME' | 'CALENDAR' | 'FORM' | 'TIMELINE'>('HOME');
+  const [activeTab, setActiveTab] = useState<'HOME' | 'CALENDAR' | 'FORM' | 'TIMELINE' | 'PROFILE'>('HOME');
   const [activeRencanaId, setActiveRencanaId] = useState<string>(rencanas[0]?.id || '');
   const [historySubTab, setHistorySubTab] = useState<'LOGS' | 'LOCATIONS_DB'>('LOGS');
+  const [showOfficerSwitchModal, setShowOfficerSwitchModal] = useState(false);
 
   // Execution Form States
   const [checkInDone, setCheckInDone] = useState(false);
@@ -65,7 +78,7 @@ export const MobileApp: React.FC<MobileAppProps> = ({
 
   const databaseLokasi = StorageService.getDatabaseLokasiDikunjungi();
   const selectedRencana = rencanas.find((r) => r.id === activeRencanaId) || rencanas[0];
-  const activeOfficer: Petugas = petugasList[0] || {
+  const activeOfficer: Petugas = currentOfficer || petugasList[0] || {
     id: 'p-1',
     nama: 'Bambang Sutrisno, S.H., M.H.',
     nip: '19780512 200312 1 002',
@@ -184,7 +197,11 @@ export const MobileApp: React.FC<MobileAppProps> = ({
       {/* Fullscreen Mobile Content Container */}
       <main className="flex-1 w-full max-w-4xl mx-auto p-3.5 md:p-5 pb-28 overflow-y-auto space-y-4">
         {/* Header Officer Card */}
-        <div className="bg-slate-900/90 border border-amber-500/35 rounded-2xl p-3.5 flex items-center justify-between shadow-lg backdrop-blur-md gap-2">
+        <div
+          onClick={() => setActiveTab('PROFILE')}
+          className="bg-slate-900/90 hover:bg-slate-800/90 border border-amber-500/35 rounded-2xl p-3.5 flex items-center justify-between shadow-lg backdrop-blur-md gap-2 cursor-pointer transition-all active:scale-98"
+          title="Buka Menu Profil Petugas"
+        >
           <div className="flex items-center gap-3 min-w-0">
             <div className="relative shrink-0">
               <img
@@ -202,9 +219,9 @@ export const MobileApp: React.FC<MobileAppProps> = ({
               <p className="text-[10px] text-slate-400 truncate">{activeOfficer.jabatan} • {activeOfficer.unit}</p>
             </div>
           </div>
-          <div className="shrink-0">
+          <div className="shrink-0 flex items-center gap-1.5">
             <span className="text-[10px] font-extrabold px-2.5 py-1 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/40 shadow-sm whitespace-nowrap inline-block">
-              KEJAKSAAN RI
+              PROFIL ›
             </span>
           </div>
         </div>
@@ -702,11 +719,157 @@ export const MobileApp: React.FC<MobileAppProps> = ({
               )}
             </div>
           )}
+
+          {/* TAB 5: OFFICER PROFILE */}
+          {activeTab === 'PROFILE' && (
+            <div className="space-y-4 animate-fade-in pb-4">
+              <div className="glass-panel p-5 text-center space-y-4 border-amber-500/30">
+                <div className="relative inline-block mx-auto">
+                  <img
+                    src={activeOfficer.fotoUrl}
+                    alt={activeOfficer.nama}
+                    className="w-24 h-24 rounded-full object-cover border-4 border-amber-400 shadow-xl"
+                  />
+                  <span className="px-2.5 py-0.5 rounded-full bg-emerald-500 text-slate-950 text-[10px] font-black uppercase absolute bottom-0 right-0 border-2 border-slate-950">
+                    Sesi Aktif
+                  </span>
+                </div>
+
+                <div>
+                  <h2 className="text-base font-black text-white">{activeOfficer.nama}</h2>
+                  <p className="text-xs text-amber-400 font-semibold mt-0.5">{activeOfficer.jabatan}</p>
+                  <span className="inline-block text-[11px] font-mono text-slate-400 bg-slate-950 px-2.5 py-0.5 rounded-md border border-slate-800 mt-1">
+                    NIP: {activeOfficer.nip}
+                  </span>
+                </div>
+              </div>
+
+              {/* Detail Info Card */}
+              <div className="glass-panel p-4 space-y-3 border-amber-500/20 text-xs">
+                <h3 className="text-xs font-black text-amber-400 uppercase tracking-wider flex items-center gap-1.5 border-b border-amber-500/20 pb-2">
+                  <Shield className="w-4 h-4 text-amber-400" /> Informasi Satuan Kerja & Kontak
+                </h3>
+
+                <div className="space-y-2.5">
+                  <div className="flex items-center justify-between border-b border-slate-800/80 pb-2">
+                    <span className="text-slate-400 flex items-center gap-1.5 font-medium">
+                      <Building className="w-3.5 h-3.5 text-amber-400" /> Satker / Unit:
+                    </span>
+                    <span className="font-bold text-white">{activeOfficer.unit}</span>
+                  </div>
+
+                  <div className="flex items-center justify-between border-b border-slate-800/80 pb-2">
+                    <span className="text-slate-400 flex items-center gap-1.5 font-medium">
+                      <Mail className="w-3.5 h-3.5 text-amber-400" /> Email Resmi:
+                    </span>
+                    <span className="font-bold text-amber-300 font-mono">{activeOfficer.email}</span>
+                  </div>
+
+                  <div className="flex items-center justify-between border-b border-slate-800/80 pb-2">
+                    <span className="text-slate-400 flex items-center gap-1.5 font-medium">
+                      <Phone className="w-3.5 h-3.5 text-amber-400" /> No. Telepon / WA:
+                    </span>
+                    <span className="font-bold text-white">{activeOfficer.telepon}</span>
+                  </div>
+
+                  <div className="flex items-center justify-between border-b border-slate-800/80 pb-2">
+                    <span className="text-slate-400 flex items-center gap-1.5 font-medium">
+                      <Award className="w-3.5 h-3.5 text-amber-400" /> Total Kunjungan Lapangan:
+                    </span>
+                    <span className="font-extrabold text-emerald-400 bg-emerald-500/20 px-2 py-0.5 rounded border border-emerald-500/30">
+                      {activeOfficer.totalKunjungan || 0} Lokasi Selesai
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="space-y-2 pt-2">
+                <button
+                  type="button"
+                  onClick={() => setShowOfficerSwitchModal(true)}
+                  className="w-full btn btn-secondary py-3 text-xs font-bold flex items-center justify-center gap-2"
+                >
+                  <UserCheck className="w-4 h-4 text-amber-400" /> Ganti Akun Petugas Lapangan
+                </button>
+
+                {onLogout && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (confirm('Apakah Anda yakin ingin keluar dari sesi petugas?')) {
+                        onLogout();
+                      }
+                    }}
+                    className="w-full btn bg-red-500/20 hover:bg-red-500/30 text-red-300 border border-red-500/40 py-3 text-xs font-bold flex items-center justify-center gap-2"
+                  >
+                    <LogOut className="w-4 h-4" /> Keluar Sesi Mobile
+                  </button>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* Switch Officer Modal */}
+          {showOfficerSwitchModal && (
+            <div className="fixed inset-0 bg-slate-950/85 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+              <div className="glass-panel w-full max-w-sm p-5 space-y-4 animate-fade-in border-amber-500/40 shadow-2xl relative">
+                <div className="flex items-center justify-between border-b border-amber-500/20 pb-2">
+                  <span className="text-xs font-black text-amber-400 uppercase tracking-wider flex items-center gap-1.5">
+                    <UserCheck className="w-4 h-4 text-amber-400" /> Pilih Petugas Lapangan
+                  </span>
+                  <button
+                    onClick={() => setShowOfficerSwitchModal(false)}
+                    className="text-slate-400 hover:text-white text-base font-bold"
+                  >
+                    ✕
+                  </button>
+                </div>
+
+                <div className="space-y-2 max-h-60 overflow-y-auto pr-1">
+                  {petugasList.map((p) => (
+                    <button
+                      key={p.id}
+                      type="button"
+                      onClick={() => {
+                        StorageService.setOfficerSession(p);
+                        if (onSelectOfficer) onSelectOfficer(p);
+                        setShowOfficerSwitchModal(false);
+                        onRefreshData();
+                      }}
+                      className={`w-full text-left p-2.5 rounded-xl border transition-all flex items-center justify-between ${
+                        p.id === activeOfficer.id
+                          ? 'bg-amber-500/20 border-amber-400'
+                          : 'bg-slate-950/80 hover:bg-slate-900 border-slate-800'
+                      }`}
+                    >
+                      <div className="flex items-center gap-2.5">
+                        <img
+                          src={p.fotoUrl}
+                          alt={p.nama}
+                          className="w-8 h-8 rounded-full object-cover border border-amber-400"
+                        />
+                        <div>
+                          <div className="font-bold text-white text-xs">{p.nama}</div>
+                          <div className="text-[10px] text-slate-400">{p.jabatan}</div>
+                        </div>
+                      </div>
+                      {p.id === activeOfficer.id && (
+                        <span className="text-[9px] font-black text-amber-400 bg-amber-500/30 px-2 py-0.5 rounded-full border border-amber-500/50">
+                          Aktif
+                        </span>
+                      )}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
       </main>
 
       {/* Fullscreen Mobile Bottom Navigation Bar */}
       <nav className="fixed bottom-0 inset-x-0 z-50 bg-[#090d16]/98 backdrop-blur-xl border-t border-amber-500/30 py-2.5 pb-[max(0.625rem,env(safe-area-inset-bottom))] shadow-[0_-10px_30px_rgba(0,0,0,0.9)]">
-        <div className="max-w-4xl mx-auto grid grid-cols-4 items-center px-2">
+        <div className="max-w-4xl mx-auto grid grid-cols-5 items-center px-1">
           <button
             onClick={() => setActiveTab('HOME')}
             className={`phone-nav-btn ${activeTab === 'HOME' ? 'active' : ''}`}
@@ -728,7 +891,7 @@ export const MobileApp: React.FC<MobileAppProps> = ({
             className={`phone-nav-btn ${activeTab === 'FORM' ? 'active' : ''}`}
           >
             <FileText className="w-5 h-5" />
-            <span>Form Field</span>
+            <span>Form</span>
           </button>
 
           <button
@@ -736,7 +899,15 @@ export const MobileApp: React.FC<MobileAppProps> = ({
             className={`phone-nav-btn ${activeTab === 'TIMELINE' ? 'active' : ''}`}
           >
             <Clock className="w-5 h-5" />
-            <span>Histori & DB</span>
+            <span>Histori</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab('PROFILE')}
+            className={`phone-nav-btn ${activeTab === 'PROFILE' ? 'active' : ''}`}
+          >
+            <User className="w-5 h-5" />
+            <span>Profil</span>
           </button>
         </div>
       </nav>
