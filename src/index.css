@@ -357,6 +357,7 @@ body {
   transition: var(--transition);
   border: none;
   outline: none;
+  -webkit-user-select: none;
   user-select: none;
 }
 
