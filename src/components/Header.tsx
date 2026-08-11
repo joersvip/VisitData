@@ -1,5 +1,5 @@
 import React from 'react';
-import { Smartphone, Monitor, Wifi, WifiOff, RefreshCw, ShieldAlert } from 'lucide-react';
+import { Smartphone, Monitor, Wifi, WifiOff, RefreshCw } from 'lucide-react';
 
 interface HeaderProps {
   viewMode: 'MOBILE' | 'ADMIN';
@@ -23,8 +23,8 @@ export const Header: React.FC<HeaderProps> = ({
       <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
         {/* Brand Logo & Title */}
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-amber-500 to-yellow-400 flex items-center justify-center shadow-lg shadow-amber-500/30 border border-amber-300/40">
-            <ShieldAlert className="w-6 h-6 text-slate-950 stroke-[2.5]" />
+          <div className="w-11 h-11 rounded-xl bg-slate-950 p-1 flex items-center justify-center shadow-lg shadow-amber-500/30 border border-amber-500/40 shrink-0">
+            <img src="/logo.png" alt="Logo Kejaksaan RI" className="w-full h-full object-contain" />
           </div>
           <div>
             <div className="flex items-center gap-2">
@@ -34,7 +34,7 @@ export const Header: React.FC<HeaderProps> = ({
               </span>
             </div>
             <p className="text-xs text-slate-400 hidden sm:block">
-              Sistem Field Visit Management & Reporting Lapangan
+              Sistem Pengawasan & Inspeksi Kunjungan Lapangan Kejaksaan RI
             </p>
           </div>
         </div>

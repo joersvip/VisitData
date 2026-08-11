@@ -41,6 +41,7 @@ export const VisitMap: React.FC<VisitMapProps> = ({
     }
 
     const map = mapInstanceRef.current;
+    map.invalidateSize();
 
     // Clear existing markers
     map.eachLayer((layer) => {

@@ -13,67 +13,67 @@ const STORAGE_KEYS = {
 const SEED_PETUGAS: Petugas[] = [
   {
     id: 'p-1',
-    nama: 'Ahmad Hidayat',
-    nip: '19880412 201201 1 001',
-    jabatan: 'Koordinator Lapangan',
-    unit: 'Inspeksi & Pengawasan',
-    telepon: '0812-3456-7890',
-    email: 'ahmad.hidayat@visitdata.id',
-    fotoUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=200',
+    nama: 'Bambang Sutrisno, S.H., M.H.',
+    nip: '19780512 200312 1 002',
+    jabatan: 'Inspektur Muda Pidum & Pidsus',
+    unit: 'Inspektorat V Kejaksaan Agung RI',
+    telepon: '0812-9876-1001',
+    email: 'bambang.sutrisno@kejaksaan.go.id',
+    fotoUrl: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&q=80&w=200',
     active: true,
-    totalKunjungan: 37,
+    totalKunjungan: 42,
   },
   {
     id: 'p-2',
-    nama: 'Budi Santoso',
-    nip: '19910815 201503 1 002',
-    jabatan: 'Inspector Kunjungan',
-    unit: 'Inspeksi & Pengawasan',
-    telepon: '0813-9876-5432',
-    email: 'budi.santoso@visitdata.id',
+    nama: 'Pratama Wijaya, S.H.',
+    nip: '19850914 200912 1 004',
+    jabatan: 'Jaksa Fungsional Inspeksi',
+    unit: 'Kejaksaan Tinggi DKI Jakarta',
+    telepon: '0813-8877-2002',
+    email: 'pratama.wijaya@kejaksaan.go.id',
     fotoUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=200',
     active: true,
-    totalKunjungan: 29,
+    totalKunjungan: 35,
   },
   {
     id: 'p-3',
-    nama: 'Candra Wijaya',
-    nip: '19940220 201802 1 003',
-    jabatan: 'Field Specialist',
-    unit: 'Pengujian Teknis',
-    telepon: '0857-1122-3344',
-    email: 'candra.wijaya@visitdata.id',
-    fotoUrl: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=200',
+    nama: 'Dewi Anggraini, S.H., M.Kn.',
+    nip: '19910322 201503 2 001',
+    jabatan: 'Auditor Intelijen Kejaksaan',
+    unit: 'Bidang Intelijen Kejati DKI',
+    telepon: '0857-3344-3003',
+    email: 'dewi.anggraini@kejaksaan.go.id',
+    fotoUrl: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=200',
     active: true,
-    totalKunjungan: 18,
+    totalKunjungan: 28,
   },
   {
     id: 'p-4',
-    nama: 'Dedi Kurniawan',
-    nip: '19961105 202001 1 004',
-    jabatan: 'Field Surveyor',
-    unit: 'Pemetaan & Survey',
-    telepon: '0819-5566-7788',
-    email: 'dedi.kurniawan@visitdata.id',
-    fotoUrl: 'https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?auto=format&fit=crop&q=80&w=200',
+    nama: 'Rizky Ramadhan, S.H.',
+    nip: '19940718 201802 1 003',
+    jabatan: 'Pemeriksa Barang Bukti & Aset',
+    unit: 'Pemulihan Aset & Barang Rampasan',
+    telepon: '0819-1122-4004',
+    email: 'rizky.ramadhan@kejaksaan.go.id',
+    fotoUrl: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=200',
     active: true,
-    totalKunjungan: 24,
+    totalKunjungan: 31,
   },
 ];
 
 const SEED_RENCANA: RencanaKunjungan[] = [
   {
     id: 'r-1',
-    nomorRencana: 'RC-2026-0801',
+    nomorRencana: 'RC-2026-KEJ-01',
     tanggal: '2026-08-11',
     jamMulai: '09:00',
     jamSelesai: '12:00',
-    lokasiNama: 'Kantor Pusat PT Solusi Utama',
-    alamat: 'Jl. Sudirman No. 45, Jakarta Selatan',
-    latitude: -6.2088,
-    longitude: 106.8456,
-    agenda: 'Monitoring & Verifikasi Fasilitas Lapangan',
-    targetHasil: 'Tersusun laporan audit kelayakan dan foto geotag',
+    lokasiNama: 'Kejaksaan Negeri Jakarta Selatan',
+    alamat: 'Jl. Raya Tanjung Barat No. 22, Jagakarsa, Jakarta Selatan',
+    latitude: -6.3044,
+    longitude: 106.8347,
+    agenda: 'Inspeksi Pemantauan Kinerja Tata Kelola Barang Bukti & Barang Rampasan Negara (BB & BR)',
+    targetHasil: 'Tersusun Berita Acara Audit Fisik Gudang Barang Bukti Pidum & Pidsus',
     petugasIds: ['p-1', 'p-2'],
     status: 'PROSES',
     reminderEnabled: true,
@@ -81,16 +81,16 @@ const SEED_RENCANA: RencanaKunjungan[] = [
   },
   {
     id: 'r-2',
-    nomorRencana: 'RC-2026-0802',
+    nomorRencana: 'RC-2026-KEJ-02',
     tanggal: '2026-08-11',
     jamMulai: '13:30',
     jamSelesai: '16:00',
-    lokasiNama: 'Substation Industri Jaya',
-    alamat: 'Kawasan Industri Daan Mogot Km. 12, Tangerang',
-    latitude: -6.1783,
-    longitude: 106.6319,
-    agenda: 'Inspeksi Rutin Perangkat Listrik & Panel Kontrol',
-    targetHasil: 'Pemeriksaan status fisik & kesiapan cadangan daya',
+    lokasiNama: 'Gudang Barang Rampasan Kejaksaan Agung RI',
+    alamat: 'Kawasan Industri Pulogadung, Jl. Rawa Gelam No. 8, Jakarta Timur',
+    latitude: -6.1894,
+    longitude: 106.9112,
+    agenda: 'Verifikasi & Inventarisasi Aset Kendaraan Sitaan Kasus Tipikor',
+    targetHasil: 'Dokumentasi geotag kendaraan rampasan & verifikasi nomor fisik rangka',
     petugasIds: ['p-1', 'p-3', 'p-4'],
     status: 'DIJADWALKAN',
     reminderEnabled: true,
@@ -98,19 +98,36 @@ const SEED_RENCANA: RencanaKunjungan[] = [
   },
   {
     id: 'r-3',
-    nomorRencana: 'RC-2026-0803',
-    tanggal: '2026-08-12',
+    nomorRencana: 'RC-2026-KEJ-03',
+    tanggal: '2026-08-10',
     jamMulai: '10:00',
     jamSelesai: '14:00',
-    lokasiNama: 'Depo Logistik Wilayah III',
-    alamat: 'Jl. Ahmad Yani No. 88, Bekasi Timur',
-    latitude: -6.2383,
-    longitude: 106.9756,
-    agenda: 'Survey Ketersediaan Material & Peralatan Lapangan',
-    targetHasil: 'Berita acara pemeriksaan fisik gudang',
+    lokasiNama: 'Kejaksaan Negeri Jakarta Barat',
+    alamat: 'Jl. Kembangan Raya No. 1, Puri Kembangan, Jakarta Barat',
+    latitude: -6.1866,
+    longitude: 106.7371,
+    agenda: 'Audit Kepatuhan SOP Pelayanan PTSP & Loket Drive-Thru Tilang',
+    targetHasil: 'Evaluasi standar pelayanan publik berpredikat WBK/WBBM',
     petugasIds: ['p-2', 'p-4'],
-    status: 'DIJADWALKAN',
+    status: 'SELESAI',
     reminderEnabled: false,
+    isRecurring: false,
+  },
+  {
+    id: 'r-4',
+    nomorRencana: 'RC-2026-KEJ-04',
+    tanggal: '2026-08-09',
+    jamMulai: '09:30',
+    jamSelesai: '12:30',
+    lokasiNama: 'Rutan Cabang Kejaksaan Agung RI',
+    alamat: 'Jl. Sultan Hasanuddin No. 1, Kebayoran Baru, Jakarta Selatan',
+    latitude: -6.2428,
+    longitude: 106.8015,
+    agenda: 'Supervisi Keamanan, Fasilitas Kesehatan, & Hak Tahanan Pidsus',
+    targetHasil: 'Berita acara pemeriksaan fisik ruang tahanan & logisitik medis',
+    petugasIds: ['p-1', 'p-3'],
+    status: 'SELESAI',
+    reminderEnabled: true,
     isRecurring: false,
   },
 ];
@@ -118,79 +135,128 @@ const SEED_RENCANA: RencanaKunjungan[] = [
 const SEED_KUNJUNGAN: Kunjungan[] = [
   {
     id: 'k-101',
-    rencanaId: 'r-1',
-    nomorKunjungan: 'KJ-2026-00124',
+    rencanaId: 'r-3',
+    nomorKunjungan: 'KJ-2026-KEJ-001',
     tanggal: '2026-08-10',
-    checkInTime: '08:55',
-    checkOutTime: '11:40',
-    checkInLat: -6.2088,
-    checkInLng: 106.8456,
-    checkOutLat: -6.2088,
-    checkOutLng: 106.8456,
+    checkInTime: '09:55',
+    checkOutTime: '13:45',
+    checkInLat: -6.1866,
+    checkInLng: 106.7371,
+    checkOutLat: -6.1866,
+    checkOutLng: 106.7371,
     kondisiLokasi: 'Baik',
-    temuan: 'Peralatan beroperasi dalam batas aman. Ditemukan 1 indikator baterai UPS memerlukan kalibrasi ulang.',
-    rekomendasi: 'Jadwalkan kalibrasi UPS unit B dalam waktu 7 hari kerja.',
+    temuan: 'Sistem Pengelolaan Barang Bukti Tilang & PTSP Kejari Jakarta Barat berjalan sangat tertib. Pendaftaran antrean digital terintegrasi baik dengan loket drive-thru tilang.',
+    rekomendasi: 'Tingkatkan kapasitas ruang tunggu PTSP dan lengkapi pendingin udara tambahan di area pendaftaran tilang.',
     prioritas: 'SEDANG',
     fotos: [
       {
         id: 'f-1',
-        url: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&q=80&w=600',
-        timestamp: '2026-08-10 09:15:22',
-        latitude: -6.2088,
-        longitude: 106.8456,
-        alamat: 'Jl. Sudirman No. 45, Jakarta Selatan',
-        keterangan: 'Pemeriksaan panel utama gedung A',
+        url: 'https://images.unsplash.com/photo-1589829545856-d10d557cf95f?auto=format&fit=crop&q=80&w=600',
+        timestamp: '2026-08-10 10:15:22',
+        latitude: -6.1866,
+        longitude: 106.7371,
+        alamat: 'Jl. Kembangan Raya No. 1, Jakarta Barat',
+        keterangan: 'Pemeriksaan loket PTSP & drive-thru tilang Kejari Jakbar',
       },
     ],
     tandaTangan: {
-      namaPihak: 'Ir. Hendra Gunawan',
-      jabatanPihak: 'Manager Facility PT Solusi Utama',
+      namaPihak: 'Dr. Supriyadi, S.H., M.H.',
+      jabatanPihak: 'Kepala Kejaksaan Negeri Jakarta Barat',
       signatureDataUrl: 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="80"><path d="M 10 40 Q 50 10 100 40 T 190 40" stroke="navy" stroke-width="3" fill="none"/></svg>',
-      timestamp: '2026-08-10 11:35:00',
+      timestamp: '2026-08-10 13:40:00',
     },
     status: 'SELESAI',
     synced: true,
-    createdAt: '2026-08-10 08:55:00',
+    createdAt: '2026-08-10 09:55:00',
+  },
+  {
+    id: 'k-102',
+    rencanaId: 'r-4',
+    nomorKunjungan: 'KJ-2026-KEJ-002',
+    tanggal: '2026-08-09',
+    checkInTime: '09:25',
+    checkOutTime: '12:20',
+    checkInLat: -6.2428,
+    checkInLng: 106.8015,
+    checkOutLat: -6.2428,
+    checkOutLng: 106.8015,
+    kondisiLokasi: 'Baik',
+    temuan: 'Kondisi fisik sel tahanan dalam keadaan aman, bersih, dan sesuai standar HAM. Fasilitas CCTV 24 jam beroperasi normal tanpa kendala teknis.',
+    rekomendasi: 'Pertahankan SOP pemeriksaan medis berkala mingguan bagi seluruh tahanan tindak pidana khusus.',
+    prioritas: 'RENDAH',
+    fotos: [
+      {
+        id: 'f-2',
+        url: 'https://images.unsplash.com/photo-1541888946425-d0fbb186a5b3?auto=format&fit=crop&q=80&w=600',
+        timestamp: '2026-08-09 10:30:15',
+        latitude: -6.2428,
+        longitude: 106.8015,
+        alamat: 'Jl. Sultan Hasanuddin No. 1, Kebayoran Baru, Jakarta Selatan',
+        keterangan: 'Supervisi ruang kontrol CCTV Rutan Kejagung RI',
+      },
+    ],
+    tandaTangan: {
+      namaPihak: 'Bambang Hernowo, S.H.',
+      jabatanPihak: 'Kepala Cabang Rutan Kejaksaan Agung RI',
+      signatureDataUrl: 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="80"><path d="M 15 45 Q 60 15 110 45 T 185 45" stroke="darkgreen" stroke-width="3" fill="none"/></svg>',
+      timestamp: '2026-08-09 12:15:00',
+    },
+    status: 'SELESAI',
+    synced: true,
+    createdAt: '2026-08-09 09:25:00',
   },
 ];
 
 const SEED_LOGS: HistoriLog[] = [
   {
     id: 'l-1',
-    timestamp: '2026-08-10 08:55:00',
+    timestamp: '2026-08-11 09:00:00',
     tipe: 'CHECKIN',
-    userNama: 'Ahmad Hidayat',
-    lokasiNama: 'Kantor Pusat PT Solusi Utama',
-    deskripsi: 'Petugas melakukan Check-In GPS di koordinat (-6.2088, 106.8456)',
+    userNama: 'Bambang Sutrisno, S.H., M.H.',
+    lokasiNama: 'Kejaksaan Negeri Jakarta Selatan',
+    deskripsi: 'Petugas Inspektorat melakukan Check-In GPS di koordinat Kejari Jaksel (-6.3044, 106.8347)',
   },
   {
     id: 'l-2',
-    timestamp: '2026-08-10 09:15:22',
-    tipe: 'FOTO',
-    userNama: 'Ahmad Hidayat',
-    lokasiNama: 'Kantor Pusat PT Solusi Utama',
-    deskripsi: 'Mengambil dokumentasi foto geotag lokasi gedung A',
+    timestamp: '2026-08-10 13:40:00',
+    tipe: 'FORM',
+    userNama: 'Pratama Wijaya, S.H.',
+    lokasiNama: 'Kejaksaan Negeri Jakarta Barat',
+    deskripsi: 'Persetujuan Berita Acara Inspeksi oleh Kajari Jakbar Dr. Supriyadi, S.H., M.H.',
   },
   {
     id: 'l-3',
-    timestamp: '2026-08-10 11:35:00',
-    tipe: 'FORM',
-    userNama: 'Ahmad Hidayat',
-    lokasiNama: 'Kantor Pusat PT Solusi Utama',
-    deskripsi: 'Pengisian formulir temuan & persetujuan tanda tangan digital Ir. Hendra Gunawan',
+    timestamp: '2026-08-10 10:15:22',
+    tipe: 'FOTO',
+    userNama: 'Pratama Wijaya, S.H.',
+    lokasiNama: 'Kejaksaan Negeri Jakarta Barat',
+    deskripsi: 'Mengunggah foto geotag lokasi PTSP & loket drive-thru tilang Kejari Jakbar',
   },
   {
     id: 'l-4',
-    timestamp: '2026-08-10 11:40:00',
+    timestamp: '2026-08-09 12:20:00',
     tipe: 'CHECKOUT',
-    userNama: 'Ahmad Hidayat',
-    lokasiNama: 'Kantor Pusat PT Solusi Utama',
-    deskripsi: 'Check-Out kegiatan kunjungan (Durasi: 2 Jam 45 Menit)',
+    userNama: 'Bambang Sutrisno, S.H., M.H.',
+    lokasiNama: 'Rutan Cabang Kejaksaan Agung RI',
+    deskripsi: 'Check-Out kegiatan supervisi rutan (Dokumen audit resmi diterbitkan)',
   },
 ];
 
 export class StorageService {
   public static initStorage() {
+    const CURRENT_SEED_VERSION = 'KEJAKSAAN_RI_V1';
+    const savedVersion = localStorage.getItem('VISITDATA_SEED_VER');
+
+    if (savedVersion !== CURRENT_SEED_VERSION) {
+      localStorage.setItem(STORAGE_KEYS.PETUGAS, JSON.stringify(SEED_PETUGAS));
+      localStorage.setItem(STORAGE_KEYS.RENCANA, JSON.stringify(SEED_RENCANA));
+      localStorage.setItem(STORAGE_KEYS.KUNJUNGAN, JSON.stringify(SEED_KUNJUNGAN));
+      localStorage.setItem(STORAGE_KEYS.LOGS, JSON.stringify(SEED_LOGS));
+      localStorage.setItem(STORAGE_KEYS.SYNC_QUEUE, JSON.stringify([]));
+      localStorage.setItem('VISITDATA_SEED_VER', CURRENT_SEED_VERSION);
+      return;
+    }
+
     if (!localStorage.getItem(STORAGE_KEYS.PETUGAS)) {
       localStorage.setItem(STORAGE_KEYS.PETUGAS, JSON.stringify(SEED_PETUGAS));
     }
@@ -431,16 +497,20 @@ export class StorageService {
     const doc = new jsPDF();
     let y = 15;
 
-    // Header
-    doc.setFillColor(15, 23, 42); // slate navy
-    doc.rect(0, 0, 210, 25, 'F');
-    doc.setTextColor(255, 255, 255);
-    doc.setFontSize(16);
+    // Header Resmi Kejaksaan RI
+    doc.setFillColor(11, 15, 25); // Slate Dark
+    doc.rect(0, 0, 210, 28, 'F');
+    doc.setTextColor(245, 158, 11); // Gold Amber
+    doc.setFontSize(14);
     doc.setFont('helvetica', 'bold');
-    doc.text('LAPORAN HASIL KUNJUNGAN LAPANGAN', 105, 14, { align: 'center' });
+    doc.text('PEMBINAAN KEJAKSAAN REPUBLIK INDONESIA', 105, 12, { align: 'center' });
+    doc.setTextColor(255, 255, 255);
     doc.setFontSize(10);
+    doc.setFont('helvetica', 'bold');
+    doc.text('BERITA ACARA & LAPORAN HASIL INSPEKSI KUNJUNGAN LAPANGAN', 105, 19, { align: 'center' });
+    doc.setFontSize(8);
     doc.setFont('helvetica', 'normal');
-    doc.text('SISTEM MANAJEMEN VISITDATA PRO • FIELD VISIT REPORT', 105, 20, { align: 'center' });
+    doc.text('VISITDATA PRO v2.0 • KEJAKSAAN RI DIGITAL REPORT SYSTEM', 105, 24, { align: 'center' });
 
     y = 35;
     doc.setTextColor(30, 41, 59);
@@ -491,7 +561,7 @@ export class StorageService {
 
     y += 8;
     doc.setFontSize(9);
-    const assignedPetugas = (petugasList || []).filter((p) => rencana?.petugasIds.includes(p.id));
+    const assignedPetugas = (petugasList || []).filter((p) => rencana?.petugasIds?.includes(p.id));
     if (assignedPetugas.length > 0) {
       assignedPetugas.forEach((p, idx) => {
         doc.setFont('helvetica', 'bold');

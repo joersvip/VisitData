@@ -54,7 +54,7 @@ export const MobileApp: React.FC<MobileAppProps> = ({
   const [activeTab, setActiveTab] = useState<'HOME' | 'CALENDAR' | 'FORM' | 'TIMELINE'>('HOME');
   const [activeRencanaId, setActiveRencanaId] = useState<string>(rencanas[0]?.id || '');
   const [historySubTab, setHistorySubTab] = useState<'LOGS' | 'LOCATIONS_DB'>('LOGS');
-  
+
   // Execution Form States
   const [checkInDone, setCheckInDone] = useState(false);
   const [checkInTime, setCheckInTime] = useState<string>('');
@@ -68,7 +68,18 @@ export const MobileApp: React.FC<MobileAppProps> = ({
 
   const databaseLokasi = StorageService.getDatabaseLokasiDikunjungi();
   const selectedRencana = rencanas.find((r) => r.id === activeRencanaId) || rencanas[0];
-  const activeOfficer = petugasList[0] || { nama: 'Ahmad Hidayat', id: 'p-1' };
+  const activeOfficer: Petugas = petugasList[0] || {
+    id: 'p-1',
+    nama: 'Bambang Sutrisno, S.H., M.H.',
+    nip: '19780512 200312 1 002',
+    jabatan: 'Inspektur Muda Pidum & Pidsus',
+    unit: 'Inspektorat V Kejaksaan Agung RI',
+    telepon: '0812-9876-1001',
+    email: 'bambang.sutrisno@kejaksaan.go.id',
+    fotoUrl: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&q=80&w=200',
+    active: true,
+    totalKunjungan: 42,
+  };
 
   // Current GPS coordinates
   const currentLat = selectedRencana?.latitude || -6.2088;
@@ -193,10 +204,15 @@ export const MobileApp: React.FC<MobileAppProps> = ({
                 <p className="text-[10px] text-slate-400">{activeOfficer.jabatan} • {activeOfficer.unit}</p>
               </div>
             </div>
-            <div className="text-right">
-              <span className="text-[10px] font-extrabold px-2.5 py-1 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/40 shadow-sm">
-                FIELD OFFICER
-              </span>
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 rounded-lg bg-slate-950 p-0.5 border border-amber-500/40 shadow-sm shrink-0">
+                <img src="/logo.png" alt="Logo Kejaksaan RI" className="w-full h-full object-contain" />
+              </div>
+              <div className="text-right">
+                <span className="text-[9px] font-extrabold px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/40 shadow-sm">
+                  KEJAKSAAN RI
+                </span>
+              </div>
             </div>
           </div>
 
@@ -298,13 +314,12 @@ export const MobileApp: React.FC<MobileAppProps> = ({
                     return (
                       <div
                         key={day}
-                        className={`py-1.5 rounded-lg font-medium transition-all ${
-                          isToday
+                        className={`py-1.5 rounded-lg font-medium transition-all ${isToday
                             ? 'bg-amber-500 text-slate-950 font-extrabold shadow-md shadow-amber-500/40'
                             : hasVisit
-                            ? 'bg-amber-500/20 text-amber-300 font-bold border border-amber-500/40'
-                            : 'text-slate-400 hover:bg-slate-800'
-                        }`}
+                              ? 'bg-amber-500/20 text-amber-300 font-bold border border-amber-500/40'
+                              : 'text-slate-400 hover:bg-slate-800'
+                          }`}
                       >
                         {day}
                         {hasVisit && <div className="w-1.5 h-1.5 bg-amber-400 rounded-full mx-auto mt-0.5" />}
@@ -323,22 +338,20 @@ export const MobileApp: React.FC<MobileAppProps> = ({
                     <div
                       key={r.id}
                       onClick={() => setActiveRencanaId(r.id)}
-                      className={`p-3.5 rounded-2xl border transition-all cursor-pointer ${
-                        isSelected
+                      className={`p-3.5 rounded-2xl border transition-all cursor-pointer ${isSelected
                           ? 'bg-amber-950/40 border-amber-500 shadow-md shadow-amber-500/20'
                           : 'bg-slate-900/80 border-slate-800 hover:bg-slate-800'
-                      }`}
+                        }`}
                     >
                       <div className="flex items-center justify-between mb-1">
                         <span className="text-[10px] font-mono font-bold text-amber-400">{r.nomorRencana}</span>
                         <span
-                          className={`badge ${
-                            r.status === 'SELESAI'
+                          className={`badge ${r.status === 'SELESAI'
                               ? 'badge-selesai'
                               : r.status === 'PROSES'
-                              ? 'badge-proses'
-                              : 'badge-dijadwalkan'
-                          }`}
+                                ? 'badge-proses'
+                                : 'badge-dijadwalkan'
+                            }`}
                         >
                           {r.status}
                         </span>
@@ -349,7 +362,7 @@ export const MobileApp: React.FC<MobileAppProps> = ({
                         {r.tanggal} ({r.jamMulai} - {r.jamSelesai})
                       </p>
                       <div className="flex items-center justify-between text-[10px] text-slate-400 border-t border-slate-800 pt-2">
-                        <span>Tim: {r.petugasIds.length} Petugas</span>
+                        <span>Tim: {r.petugasIds?.length || 0} Petugas</span>
                         <span className="text-amber-400 font-bold flex items-center gap-0.5">
                           Pilih Target <ChevronRight className="w-3 h-3" />
                         </span>
@@ -449,15 +462,14 @@ export const MobileApp: React.FC<MobileAppProps> = ({
                             key={p}
                             type="button"
                             onClick={() => setPrioritas(p)}
-                            className={`py-2 rounded-xl text-xs font-extrabold transition-all border ${
-                              prioritas === p
+                            className={`py-2 rounded-xl text-xs font-extrabold transition-all border ${prioritas === p
                                 ? p === 'TINGGI'
                                   ? 'bg-rose-500 text-white border-rose-400 shadow-md shadow-rose-500/30'
                                   : p === 'SEDANG'
-                                  ? 'bg-amber-500 text-slate-950 border-amber-400 shadow-md shadow-amber-500/30'
-                                  : 'bg-emerald-600 text-white border-emerald-400 shadow-md shadow-emerald-500/30'
+                                    ? 'bg-amber-500 text-slate-950 border-amber-400 shadow-md shadow-amber-500/30'
+                                    : 'bg-emerald-600 text-white border-emerald-400 shadow-md shadow-emerald-500/30'
                                 : 'bg-slate-950 text-slate-400 border-slate-800'
-                            }`}
+                              }`}
                           >
                             {p}
                           </button>
@@ -543,21 +555,19 @@ export const MobileApp: React.FC<MobileAppProps> = ({
               <div className="flex items-center bg-slate-950 p-1 rounded-2xl border border-amber-500/25">
                 <button
                   onClick={() => setHistorySubTab('LOGS')}
-                  className={`flex-1 py-2 rounded-xl text-xs font-extrabold transition-all ${
-                    historySubTab === 'LOGS'
+                  className={`flex-1 py-2 rounded-xl text-xs font-extrabold transition-all ${historySubTab === 'LOGS'
                       ? 'bg-amber-500 text-slate-950 shadow-md'
                       : 'text-slate-400 hover:text-white'
-                  }`}
+                    }`}
                 >
                   Log Kunjungan Selesai
                 </button>
                 <button
                   onClick={() => setHistorySubTab('LOCATIONS_DB')}
-                  className={`flex-1 py-2 rounded-xl text-xs font-extrabold transition-all flex items-center justify-center gap-1.5 ${
-                    historySubTab === 'LOCATIONS_DB'
+                  className={`flex-1 py-2 rounded-xl text-xs font-extrabold transition-all flex items-center justify-center gap-1.5 ${historySubTab === 'LOCATIONS_DB'
                       ? 'bg-amber-500 text-slate-950 shadow-md'
                       : 'text-slate-400 hover:text-white'
-                  }`}
+                    }`}
                 >
                   <Database className="w-3.5 h-3.5" /> DB Lokasi Dikunjungi
                 </button>

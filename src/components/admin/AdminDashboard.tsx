@@ -147,14 +147,19 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
     <div className="max-w-7xl mx-auto p-4 sm:p-6 space-y-6 animate-fade-in">
       {/* Top Banner & Quick Controls */}
       <div className="glass-panel p-6 flex flex-col md:flex-row md:items-center justify-between gap-4 border-amber-500/30">
-        <div>
-          <div className="flex items-center gap-2 text-amber-400 text-xs font-extrabold uppercase tracking-wider mb-1">
-            <Shield className="w-4 h-4 text-amber-400" /> SUPERVISOR WORKSPACE • GOLD EDITION
+        <div className="flex items-center gap-4">
+          <div className="w-16 h-16 rounded-2xl bg-slate-950 p-2 flex items-center justify-center border border-amber-500/40 shadow-xl shadow-amber-500/20 shrink-0">
+            <img src="/logo.png" alt="Logo Kejaksaan RI" className="w-full h-full object-contain" />
           </div>
-          <h2 className="text-xl sm:text-2xl font-bold text-white">Dashboard Monitoring Kunjungan Lapangan</h2>
-          <p className="text-xs text-slate-400 mt-1">
-            Pantau pergerakan tim petugas, jadwal kunjungan, database lokasi pernah dikunjungi, dan hasil laporan secara real-time.
-          </p>
+          <div>
+            <div className="flex items-center gap-2 text-amber-400 text-xs font-extrabold uppercase tracking-wider mb-0.5">
+              <Shield className="w-4 h-4 text-amber-400" /> PEMBINAAN KEJAKSAAN REPUBLIK INDONESIA
+            </div>
+            <h2 className="text-xl sm:text-2xl font-bold text-white">Dashboard Monitoring Inspeksi Lapangan</h2>
+            <p className="text-xs text-slate-400 mt-1">
+              Pantau pergerakan tim petugas, jadwal kunjungan, database lokasi pernah dikunjungi, dan hasil laporan secara real-time.
+            </p>
+          </div>
         </div>
 
         <div className="flex items-center gap-3">
@@ -506,7 +511,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
               </thead>
               <tbody className="divide-y divide-slate-800 text-slate-200">
                 {filteredRencanas.map((r) => {
-                  const assigned = petugasList.filter((p) => r.petugasIds.includes(p.id));
+                  const assigned = petugasList.filter((p) => r.petugasIds?.includes(p.id));
                   return (
                     <tr key={r.id} className="hover:bg-slate-800/50 transition-all">
                       <td className="p-3 font-mono font-bold text-amber-400">{r.nomorRencana}</td>
