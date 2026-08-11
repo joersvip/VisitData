@@ -38,6 +38,8 @@ const SEED_PETUGAS: Petugas[] = [
     fotoUrl: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&q=80&w=200',
     active: true,
     totalKunjungan: 0,
+    role: 'SUPER_ADMIN',
+    tim: 'Tim Inspektorat Utama (JAMWAS)',
   },
 ];
 
@@ -244,6 +246,28 @@ export class StorageService {
     localStorage.setItem(STORAGE_KEYS.PETUGAS, JSON.stringify(list));
     this.notifyDataChanged();
     return created;
+  }
+
+  public static updatePetugas(id: string, updatedFields: Partial<Petugas>): Petugas | null {
+    const list = this.getPetugas();
+    const index = list.findIndex((p) => p.id === id);
+    if (index === -1) return null;
+
+    list[index] = {
+      ...list[index],
+      ...updatedFields,
+    };
+    localStorage.setItem(STORAGE_KEYS.PETUGAS, JSON.stringify(list));
+
+    this.addLog({
+      tipe: 'SYNC',
+      userNama: 'Admin System',
+      lokasiNama: 'Master Data Petugas',
+      deskripsi: `Memperbarui data & role petugas ${list[index].nama} (${list[index].role || 'PETUGAS_LAPANGAN'} - Tim: ${list[index].tim || 'Utama'})`,
+    });
+
+    this.notifyDataChanged();
+    return list[index];
   }
 
   public static deletePetugas(id: string): boolean {

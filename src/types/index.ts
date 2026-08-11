@@ -1,5 +1,13 @@
 export type UserRole = 'ADMIN' | 'SUPERVISOR' | 'PETUGAS';
 
+export type OfficialRole =
+  | 'SUPER_ADMIN'
+  | 'INSPEKTUR_UTAMA'
+  | 'INSPEKTUR_MUDA'
+  | 'JAKSA_FUNGSIONAL'
+  | 'AUDITOR_INTEL'
+  | 'PETUGAS_LAPANGAN';
+
 export type StatusKunjungan = 'DIJADWALKAN' | 'PROSES' | 'SELESAI' | 'BATAL';
 export type PrioritasType = 'RENDAH' | 'SEDANG' | 'TINGGI';
 
@@ -14,6 +22,8 @@ export interface Petugas {
   fotoUrl: string;
   active: boolean;
   totalKunjungan: number;
+  role?: OfficialRole;
+  tim?: string;
 }
 
 export interface RencanaKunjungan {

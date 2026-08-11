@@ -23,8 +23,12 @@ import {
   Mail,
   RefreshCw,
   AlertTriangle,
+  UserCog,
+  Briefcase,
+  Layers,
+  Award,
 } from 'lucide-react';
-import type { Petugas, RencanaKunjungan, Kunjungan, HistoriLog, LokasiDikunjungi, AdminUser } from '../../types';
+import type { Petugas, RencanaKunjungan, Kunjungan, HistoriLog, LokasiDikunjungi, AdminUser, OfficialRole } from '../../types';
 import { StorageService } from '../../services/storage';
 import { VisitMap } from '../VisitMap';
 
@@ -67,13 +71,18 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
   const latitude = -6.2088;
   const longitude = 106.8456;
 
-  // Form State: New Officer & Deletion
+  // Form State: Officer, Role & Team Management
+  const [editingPetugasId, setEditingPetugasId] = useState<string | null>(null);
   const [showAddPetugasModal, setShowAddPetugasModal] = useState(false);
   const [petugasToDelete, setPetugasToDelete] = useState<Petugas | null>(null);
   const [namaPetugas, setNamaPetugas] = useState('');
   const [nipPetugas, setNipPetugas] = useState('');
-  const [jabatanPetugas, setJabatanPetugas] = useState('Inspector Lapangan');
+  const [jabatanPetugas, setJabatanPetugas] = useState('Inspektur Lapangan');
+  const [unitPetugas, setUnitPetugas] = useState('JAMWAS - Kejaksaan Agung RI');
   const [teleponPetugas, setTeleponPetugas] = useState('0812-0000-1111');
+  const [emailPetugas, setEmailPetugas] = useState('');
+  const [rolePetugas, setRolePetugas] = useState<OfficialRole>('PETUGAS_LAPANGAN');
+  const [timPetugas, setTimPetugas] = useState('Tim Inspektorat I (Pidum & Pidsus)');
 
   // Search & Filters
   const [searchQuery, setSearchQuery] = useState('');
@@ -152,26 +161,70 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
     setShowAddRencanaModal(false);
   };
 
-  const handleCreatePetugas = (e: React.FormEvent) => {
+  const handleOpenCreatePetugas = () => {
+    setEditingPetugasId(null);
+    setNamaPetugas('');
+    setNipPetugas('');
+    setJabatanPetugas('Inspektur Lapangan');
+    setUnitPetugas('JAMWAS - Kejaksaan Agung RI');
+    setTeleponPetugas('0812-0000-1111');
+    setEmailPetugas('');
+    setRolePetugas('PETUGAS_LAPANGAN');
+    setTimPetugas('Tim Inspektorat I (Pidum & Pidsus)');
+    setShowAddPetugasModal(true);
+  };
+
+  const handleOpenEditPetugas = (p: Petugas) => {
+    setEditingPetugasId(p.id);
+    setNamaPetugas(p.nama);
+    setNipPetugas(p.nip);
+    setJabatanPetugas(p.jabatan || 'Inspektur Lapangan');
+    setUnitPetugas(p.unit || 'JAMWAS - Kejaksaan Agung RI');
+    setTeleponPetugas(p.telepon || '0812-0000-1111');
+    setEmailPetugas(p.email || '');
+    setRolePetugas(p.role || 'PETUGAS_LAPANGAN');
+    setTimPetugas(p.tim || 'Tim Inspektorat I (Pidum & Pidsus)');
+    setShowAddPetugasModal(true);
+  };
+
+  const handleSavePetugas = (e: React.FormEvent) => {
     e.preventDefault();
     if (!namaPetugas || !nipPetugas) return;
 
-    StorageService.addPetugas({
-      nama: namaPetugas,
-      nip: nipPetugas,
-      jabatan: jabatanPetugas,
-      unit: 'Inspeksi Lapangan',
-      telepon: teleponPetugas,
-      email: `${namaPetugas.toLowerCase().replace(/\s+/g, '.')}@visitdata.id`,
-      fotoUrl: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&q=80&w=200',
-      active: true,
-    });
+    const generatedEmail = emailPetugas.trim()
+      ? emailPetugas.trim()
+      : `${namaPetugas.toLowerCase().replace(/\s+/g, '.')}@kejaksaan.go.id`;
+
+    if (editingPetugasId) {
+      StorageService.updatePetugas(editingPetugasId, {
+        nama: namaPetugas,
+        nip: nipPetugas,
+        jabatan: jabatanPetugas,
+        unit: unitPetugas,
+        telepon: teleponPetugas,
+        email: generatedEmail,
+        role: rolePetugas,
+        tim: timPetugas,
+      });
+      alert(`✅ Master Data & Role Petugas "${namaPetugas}" Berhasil Diperbarui!`);
+    } else {
+      StorageService.addPetugas({
+        nama: namaPetugas,
+        nip: nipPetugas,
+        jabatan: jabatanPetugas,
+        unit: unitPetugas,
+        telepon: teleponPetugas,
+        email: generatedEmail,
+        fotoUrl: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&q=80&w=200',
+        active: true,
+        role: rolePetugas,
+        tim: timPetugas,
+      });
+      alert(`✅ Akun Petugas Baru & Penugasan Tim Berhasil Ditambahkan!`);
+    }
 
     onRefreshData();
     setShowAddPetugasModal(false);
-    setNamaPetugas('');
-    setNipPetugas('');
-    alert('✅ Master Data Petugas Baru Berhasil Ditambahkan!');
   };
 
   const handleInitiateDeletePetugas = (p: Petugas) => {
@@ -201,6 +254,47 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+  };
+
+  const renderRoleBadge = (role?: OfficialRole) => {
+    switch (role) {
+      case 'SUPER_ADMIN':
+        return (
+          <span className="px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/40 text-[10px] font-black uppercase tracking-wider inline-flex items-center gap-1">
+            <ShieldCheck className="w-3 h-3 text-amber-400" /> SUPER ADMIN
+          </span>
+        );
+      case 'INSPEKTUR_UTAMA':
+        return (
+          <span className="px-2.5 py-0.5 rounded-full bg-amber-400/15 text-amber-200 border border-amber-400/30 text-[10px] font-bold uppercase tracking-wider inline-flex items-center gap-1">
+            <Award className="w-3 h-3 text-amber-400" /> KETUA TIM (INSPEKTUR UTAMA)
+          </span>
+        );
+      case 'INSPEKTUR_MUDA':
+        return (
+          <span className="px-2.5 py-0.5 rounded-full bg-sky-500/15 text-sky-300 border border-sky-500/30 text-[10px] font-bold uppercase tracking-wider inline-flex items-center gap-1">
+            <Briefcase className="w-3 h-3 text-sky-400" /> INSPEKTUR MUDA
+          </span>
+        );
+      case 'JAKSA_FUNGSIONAL':
+        return (
+          <span className="px-2.5 py-0.5 rounded-full bg-indigo-500/15 text-indigo-300 border border-indigo-500/30 text-[10px] font-bold uppercase tracking-wider inline-flex items-center gap-1">
+            <Shield className="w-3 h-3 text-indigo-400" /> JAKSA FUNGSIONAL
+          </span>
+        );
+      case 'AUDITOR_INTEL':
+        return (
+          <span className="px-2.5 py-0.5 rounded-full bg-purple-500/15 text-purple-300 border border-purple-500/30 text-[10px] font-bold uppercase tracking-wider inline-flex items-center gap-1">
+            <UserCog className="w-3 h-3 text-purple-400" /> AUDITOR INTELIJEN
+          </span>
+        );
+      default:
+        return (
+          <span className="px-2.5 py-0.5 rounded-full bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 text-[10px] font-bold uppercase tracking-wider inline-flex items-center gap-1">
+            <Users className="w-3 h-3 text-emerald-400" /> PETUGAS LAPANGAN
+          </span>
+        );
+    }
   };
 
   const filteredRencanas = rencanas.filter((r) => {
@@ -738,45 +832,74 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
       {/* TAB 3: OFFICERS */}
       {activeTab === 'OFFICERS' && (
         <div className="space-y-4">
-          <div className="flex items-center justify-between">
-            <h3 className="text-sm font-bold text-white">Master Data Tim Petugas Lapangan</h3>
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div>
+              <h3 className="text-sm font-bold text-white flex items-center gap-2">
+                <Users className="w-4 h-4 text-amber-400" /> Kelola Master Data & Tim Inspeksi Lapangan
+              </h3>
+              <p className="text-xs text-slate-400 mt-0.5">
+                Atur struktur role kedinasan, penugasan tim kerja, serta akun petugas yang aktif.
+              </p>
+            </div>
             <button
-              onClick={() => setShowAddPetugasModal(true)}
-              className="btn btn-primary font-extrabold"
+              onClick={handleOpenCreatePetugas}
+              className="btn btn-primary font-extrabold shrink-0"
             >
-              <UserPlus className="w-4 h-4" /> Tambah Petugas Baru
+              <UserPlus className="w-4 h-4" /> Tambah Petugas & Tim Baru
             </button>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {petugasList.map((p) => (
-              <div key={p.id} className="glass-panel p-4 space-y-3 border-t-4 border-t-amber-500 border-amber-500/25">
-                <div className="flex items-center gap-3">
-                  <img
-                    src={p.fotoUrl}
-                    alt={p.nama}
-                    className="w-12 h-12 rounded-full object-cover border-2 border-amber-500"
-                  />
-                  <div>
-                    <h4 className="text-sm font-bold text-white">{p.nama}</h4>
-                    <p className="text-[11px] text-amber-400 font-semibold">{p.jabatan}</p>
+              <div
+                key={p.id}
+                className="glass-panel p-4.5 space-y-3.5 border-t-4 border-t-amber-500 border-amber-500/25 relative group hover:border-amber-500/50 transition-all shadow-lg"
+              >
+                <div className="flex items-start justify-between gap-2">
+                  <div className="flex items-center gap-3">
+                    <div className="relative shrink-0">
+                      <img
+                        src={p.fotoUrl}
+                        alt={p.nama}
+                        className="w-12 h-12 rounded-xl object-cover border-2 border-amber-500 shadow-md"
+                      />
+                      <span className="w-3 h-3 bg-emerald-500 rounded-full border-2 border-slate-950 absolute -bottom-1 -right-1" />
+                    </div>
+                    <div>
+                      <h4 className="text-sm font-bold text-white line-clamp-1">{p.nama}</h4>
+                      <p className="text-[11px] text-amber-400 font-semibold">{p.jabatan}</p>
+                    </div>
                   </div>
                 </div>
 
-                <div className="space-y-1 text-xs text-slate-300 bg-slate-950/80 p-2.5 rounded-xl border border-slate-800">
-                  <div><strong className="text-slate-400">NIP:</strong> {p.nip}</div>
-                  <div><strong className="text-slate-400">Unit:</strong> {p.unit}</div>
-                  <div><strong className="text-slate-400">Telepon:</strong> {p.telepon}</div>
-                  <div><strong className="text-slate-400">Total Visit:</strong> <span className="text-amber-400 font-bold">{p.totalKunjungan} Kali</span></div>
+                {/* Role Badge & Team Badge */}
+                <div className="space-y-1.5 pt-1">
+                  <div>{renderRoleBadge(p.role)}</div>
+                  <div className="text-[10px] font-semibold text-slate-300 bg-slate-900/90 px-2.5 py-1 rounded-lg border border-amber-500/20 flex items-center gap-1.5">
+                    <Layers className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+                    <span className="truncate">{p.tim || 'Tim Inspektorat I (Pidum & Pidsus)'}</span>
+                  </div>
+                </div>
+
+                <div className="space-y-1 text-xs text-slate-300 bg-slate-950/80 p-3 rounded-xl border border-slate-800 font-mono">
+                  <div><strong className="text-slate-400 font-sans">NIP:</strong> {p.nip}</div>
+                  <div><strong className="text-slate-400 font-sans">Unit:</strong> {p.unit}</div>
+                  <div><strong className="text-slate-400 font-sans">Email:</strong> <span className="text-slate-200">{p.email}</span></div>
+                  <div><strong className="text-slate-400 font-sans">Telepon:</strong> {p.telepon}</div>
+                  <div><strong className="text-slate-400 font-sans font-bold text-amber-400">Total Kunjungan:</strong> <span className="text-amber-400 font-bold">{p.totalKunjungan} Kali</span></div>
                 </div>
 
                 <div className="flex items-center gap-2 pt-1">
-                  <span className="flex-1 text-center py-1 rounded bg-amber-500/10 text-amber-300 border border-amber-500/30 text-[10px] font-bold">
-                    ● STATUS LAPANGAN AKTIF
-                  </span>
+                  <button
+                    onClick={() => handleOpenEditPetugas(p)}
+                    className="flex-1 py-1.5 rounded-lg bg-amber-500/15 hover:bg-amber-500/25 text-amber-300 border border-amber-500/35 text-xs font-bold transition-all flex items-center justify-center gap-1.5"
+                    title="Edit Role, Tim & Data Petugas"
+                  >
+                    <UserCog className="w-3.5 h-3.5 text-amber-400" /> Edit Role & Tim
+                  </button>
                   <button
                     onClick={() => handleInitiateDeletePetugas(p)}
-                    className="p-1.5 rounded bg-rose-500/10 hover:bg-rose-500/25 text-rose-400 border border-rose-500/30 text-[10px] font-bold transition-all flex items-center justify-center shrink-0"
+                    className="p-1.5 rounded-lg bg-rose-500/10 hover:bg-rose-500/25 text-rose-400 border border-rose-500/30 text-xs font-bold transition-all flex items-center justify-center shrink-0"
                     title="Hapus Petugas Lapangan"
                   >
                     <Trash2 className="w-4 h-4" />
@@ -1012,13 +1135,14 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
         </div>
       )}
 
-      {/* MODAL: ADD PETUGAS */}
+      {/* MODAL: ADD / EDIT PETUGAS & ROLE & TIM */}
       {showAddPetugasModal && (
-        <div className="fixed inset-0 bg-slate-950/85 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="glass-panel w-full max-w-md p-6 space-y-4 animate-fade-in border-amber-500/40">
+        <div className="fixed inset-0 bg-slate-950/85 backdrop-blur-sm z-50 flex items-center justify-center p-4 overflow-y-auto">
+          <div className="glass-panel w-full max-w-lg p-6 space-y-4 animate-fade-in border-amber-500/40 my-8 shadow-2xl">
             <div className="flex items-center justify-between border-b border-amber-500/20 pb-3">
               <h3 className="text-base font-bold text-white flex items-center gap-2">
-                <UserPlus className="w-5 h-5 text-amber-400" /> Tambah Petugas Lapangan Baru
+                <UserCog className="w-5 h-5 text-amber-400" />
+                {editingPetugasId ? 'Edit Data Petugas, Role & Tim' : 'Tambah Petugas & Penugasan Tim Baru'}
               </h3>
               <button
                 onClick={() => setShowAddPetugasModal(false)}
@@ -1028,52 +1152,124 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
               </button>
             </div>
 
-            <form onSubmit={handleCreatePetugas} className="space-y-3 text-xs">
-              <div className="space-y-1">
-                <label className="text-slate-300 font-semibold">Nama Lengkap Petugas *</label>
-                <input
-                  type="text"
-                  required
-                  placeholder="Mis. Eko Prasetyo"
-                  value={namaPetugas}
-                  onChange={(e) => setNamaPetugas(e.target.value)}
-                  className="w-full bg-slate-950 border border-amber-500/20 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-amber-500"
-                />
+            <form onSubmit={handleSavePetugas} className="space-y-3.5 text-xs">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div className="space-y-1">
+                  <label className="text-slate-300 font-semibold flex items-center gap-1">
+                    <Users className="w-3.5 h-3.5 text-amber-400" /> Nama Lengkap Petugas *
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="Mis. Eko Prasetyo, S.H."
+                    value={namaPetugas}
+                    onChange={(e) => setNamaPetugas(e.target.value)}
+                    className="w-full bg-slate-950 border border-amber-500/20 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-amber-500"
+                  />
+                </div>
+
+                <div className="space-y-1">
+                  <label className="text-slate-300 font-semibold flex items-center gap-1">
+                    <Shield className="w-3.5 h-3.5 text-amber-400" /> NIP / Identitas Pegawai *
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="Mis. 19980510 202201 1 005"
+                    value={nipPetugas}
+                    onChange={(e) => setNipPetugas(e.target.value)}
+                    className="w-full bg-slate-950 border border-amber-500/20 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-amber-500"
+                  />
+                </div>
               </div>
 
+              {/* Role Kedinasan */}
               <div className="space-y-1">
-                <label className="text-slate-300 font-semibold">NIP / Nomor Identitas *</label>
-                <input
-                  type="text"
-                  required
-                  placeholder="Mis. 19980510 202201 1 005"
-                  value={nipPetugas}
-                  onChange={(e) => setNipPetugas(e.target.value)}
-                  className="w-full bg-slate-950 border border-amber-500/20 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-amber-500"
-                />
+                <label className="text-slate-300 font-semibold flex items-center gap-1">
+                  <Award className="w-3.5 h-3.5 text-amber-400" /> Role / Hak Akses Kedinasan *
+                </label>
+                <select
+                  value={rolePetugas}
+                  onChange={(e) => setRolePetugas(e.target.value as OfficialRole)}
+                  className="w-full bg-slate-950 border border-amber-500/30 rounded-lg px-3 py-2 text-white font-semibold focus:outline-none focus:border-amber-500"
+                >
+                  <option value="PETUGAS_LAPANGAN">Inspektur Lapangan (Petugas Operasional)</option>
+                  <option value="INSPEKTUR_UTAMA">Inspektur Utama (Ketua Tim Inspeksi)</option>
+                  <option value="INSPEKTUR_MUDA">Inspektur Muda (Pidum & Pidsus)</option>
+                  <option value="JAKSA_FUNGSIONAL">Jaksa Fungsional Inspeksi</option>
+                  <option value="AUDITOR_INTEL">Auditor Intelijen Kejaksaan</option>
+                  <option value="SUPER_ADMIN">Super Administrator (Akses Penuh Portal)</option>
+                </select>
               </div>
 
+              {/* Penugasan Tim / Regu */}
               <div className="space-y-1">
-                <label className="text-slate-300 font-semibold">Jabatan Lapangan</label>
-                <input
-                  type="text"
-                  value={jabatanPetugas}
-                  onChange={(e) => setJabatanPetugas(e.target.value)}
-                  className="w-full bg-slate-950 border border-amber-500/20 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-amber-500"
-                />
+                <label className="text-slate-300 font-semibold flex items-center gap-1">
+                  <Layers className="w-3.5 h-3.5 text-amber-400" /> Kelola Penugasan Tim / Regu Inspeksi *
+                </label>
+                <select
+                  value={timPetugas}
+                  onChange={(e) => setTimPetugas(e.target.value)}
+                  className="w-full bg-slate-950 border border-amber-500/30 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-amber-500"
+                >
+                  <option value="Tim Inspektorat I (Pidum & Pidsus)">Tim Inspektorat I (Pidum & Pidsus)</option>
+                  <option value="Tim Inspektorat II (Intelijen & Pengawasan)">Tim Inspektorat II (Intelijen & Pengawasan)</option>
+                  <option value="Tim Inspektorat III (Tatapid) Kejaksaan RI">Tim Inspektorat III (Tatapid) Kejaksaan RI</option>
+                  <option value="Tim Audit Pemulihan Aset & Barang Rampasan">Tim Audit Pemulihan Aset & Barang Rampasan</option>
+                  <option value="Tim Inspeksi Khusus Wilayah Kejati/Kejari">Tim Inspeksi Khusus Wilayah Kejati/Kejari</option>
+                  <option value="Tim Khusus Pengawas Inspeksi Lapangan">Tim Khusus Pengawas Inspeksi Lapangan</option>
+                </select>
               </div>
 
-              <div className="space-y-1">
-                <label className="text-slate-300 font-semibold">Nomor Telepon / WhatsApp</label>
-                <input
-                  type="text"
-                  value={teleponPetugas}
-                  onChange={(e) => setTeleponPetugas(e.target.value)}
-                  className="w-full bg-slate-950 border border-amber-500/20 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-amber-500"
-                />
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div className="space-y-1">
+                  <label className="text-slate-300 font-semibold">Jabatan Kedinasan</label>
+                  <input
+                    type="text"
+                    placeholder="Mis. Jaksa Fungsional Inspeksi"
+                    value={jabatanPetugas}
+                    onChange={(e) => setJabatanPetugas(e.target.value)}
+                    className="w-full bg-slate-950 border border-amber-500/20 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-amber-500"
+                  />
+                </div>
+
+                <div className="space-y-1">
+                  <label className="text-slate-300 font-semibold">Unit / Satuan Kerja</label>
+                  <input
+                    type="text"
+                    placeholder="Mis. JAMWAS - Kejaksaan Agung RI"
+                    value={unitPetugas}
+                    onChange={(e) => setUnitPetugas(e.target.value)}
+                    className="w-full bg-slate-950 border border-amber-500/20 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-amber-500"
+                  />
+                </div>
               </div>
 
-              <div className="pt-2 flex items-center justify-end gap-2 border-t border-slate-800">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div className="space-y-1">
+                  <label className="text-slate-300 font-semibold">Email Resmi Kejaksaan</label>
+                  <input
+                    type="email"
+                    placeholder="nama@kejaksaan.go.id"
+                    value={emailPetugas}
+                    onChange={(e) => setEmailPetugas(e.target.value)}
+                    className="w-full bg-slate-950 border border-amber-500/20 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-amber-500"
+                  />
+                </div>
+
+                <div className="space-y-1">
+                  <label className="text-slate-300 font-semibold">Nomor Telepon / WhatsApp</label>
+                  <input
+                    type="text"
+                    placeholder="0812-3456-7890"
+                    value={teleponPetugas}
+                    onChange={(e) => setTeleponPetugas(e.target.value)}
+                    className="w-full bg-slate-950 border border-amber-500/20 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-amber-500"
+                  />
+                </div>
+              </div>
+
+              <div className="pt-3 flex items-center justify-end gap-2 border-t border-slate-800">
                 <button
                   type="button"
                   onClick={() => setShowAddPetugasModal(false)}
@@ -1081,8 +1277,9 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 >
                   Batal
                 </button>
-                <button type="submit" className="btn btn-primary font-extrabold">
-                  Simpan Petugas
+                <button type="submit" className="btn btn-primary font-extrabold flex items-center gap-1">
+                  <UserPlus className="w-4 h-4" />
+                  <span>{editingPetugasId ? 'Simpan Perubahan Role & Tim' : 'Simpan Petugas & Assign Tim'}</span>
                 </button>
               </div>
             </form>
