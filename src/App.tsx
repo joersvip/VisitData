@@ -1,11 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Capacitor } from '@capacitor/core';
-import { Header } from './components/Header';
 import { MobileApp } from './components/mobile/MobileApp';
 import { AdminDashboard } from './components/admin/AdminDashboard';
 import { StorageService } from './services/storage';
 import type { Petugas, RencanaKunjungan, Kunjungan, HistoriLog } from './types';
-import confetti from 'canvas-confetti';
 
 const getInitialViewMode = (): 'MOBILE' | 'ADMIN' => {
   const path = window.location.pathname.toLowerCase();
@@ -31,21 +29,18 @@ const getInitialViewMode = (): 'MOBILE' | 'ADMIN' => {
 
 export const App: React.FC = () => {
   const [viewMode, setViewMode] = useState<'MOBILE' | 'ADMIN'>(getInitialViewMode);
-  const [isOnline, setIsOnline] = useState<boolean>(true);
 
   // State data
   const [petugasList, setPetugasList] = useState<Petugas[]>([]);
   const [rencanas, setRencanas] = useState<RencanaKunjungan[]>([]);
   const [kunjungans, setKunjungans] = useState<Kunjungan[]>([]);
   const [logs, setLogs] = useState<HistoriLog[]>([]);
-  const [pendingSyncCount, setPendingSyncCount] = useState<number>(0);
 
   const refreshAllData = () => {
     setPetugasList(StorageService.getPetugas());
     setRencanas(StorageService.getRencana());
     setKunjungans(StorageService.getKunjungan());
     setLogs(StorageService.getLogs());
-    setPendingSyncCount(StorageService.getSyncQueue().length);
   };
 
   useEffect(() => {
@@ -65,34 +60,8 @@ export const App: React.FC = () => {
     window.history.pushState({}, '', mode === 'MOBILE' ? '?mode=mobile' : '?mode=admin');
   };
 
-  const handleSync = () => {
-    if (!isOnline) return;
-    const syncedCount = StorageService.processSync();
-    refreshAllData();
-    if (syncedCount > 0) {
-      confetti({
-        particleCount: 80,
-        spread: 60,
-        origin: { y: 0.2 },
-      });
-      alert(`🎉 Berhasil mensinkronisasi ${syncedCount} data kunjungan ke cloud server!`);
-    }
-  };
-
   return (
     <div className="min-h-screen bg-[#090d16] text-slate-100 flex flex-col selection:bg-blue-500 selection:text-white">
-      {/* If in ADMIN Web Dashboard Mode, render top Desktop Header */}
-      {viewMode === 'ADMIN' && (
-        <Header
-          viewMode={viewMode}
-          setViewMode={handleSetViewMode}
-          isOnline={isOnline}
-          setIsOnline={setIsOnline}
-          onSync={handleSync}
-          pendingSyncCount={pendingSyncCount}
-        />
-      )}
-
       {/* Main View Container */}
       <main className="flex-1 flex flex-col">
         {viewMode === 'MOBILE' ? (
@@ -101,7 +70,7 @@ export const App: React.FC = () => {
             rencanas={rencanas}
             kunjungans={kunjungans}
             logs={logs}
-            isOnline={isOnline}
+            isOnline={true}
             onRefreshData={refreshAllData}
             onSwitchToAdmin={() => handleSetViewMode('ADMIN')}
           />
@@ -112,6 +81,7 @@ export const App: React.FC = () => {
             kunjungans={kunjungans}
             logs={logs}
             onRefreshData={refreshAllData}
+            onSwitchToMobile={() => handleSetViewMode('MOBILE')}
           />
         )}
       </main>
