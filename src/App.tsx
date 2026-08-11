@@ -57,8 +57,39 @@ export const App: React.FC = () => {
       setViewMode(getInitialViewMode());
     };
 
+    const handleSyncEvent = () => {
+      refreshAllData();
+    };
+
     window.addEventListener('popstate', handlePopState);
-    return () => window.removeEventListener('popstate', handlePopState);
+    window.addEventListener('storage', handleSyncEvent);
+    window.addEventListener('visitdata:sync_update', handleSyncEvent);
+
+    // BroadcastChannel sync listener
+    let channel: BroadcastChannel | null = null;
+    try {
+      channel = new BroadcastChannel('visitdata_sync_channel');
+      channel.onmessage = (event) => {
+        if (event.data?.type === 'DATA_UPDATED') {
+          refreshAllData();
+        }
+      };
+    } catch {
+      // Fallback
+    }
+
+    // 2-second background sync poll to guarantee Android & Web synchronization
+    const syncInterval = setInterval(() => {
+      refreshAllData();
+    }, 2000);
+
+    return () => {
+      window.removeEventListener('popstate', handlePopState);
+      window.removeEventListener('storage', handleSyncEvent);
+      window.removeEventListener('visitdata:sync_update', handleSyncEvent);
+      if (channel) channel.close();
+      clearInterval(syncInterval);
+    };
   }, []);
 
   const handleAdminLogout = () => {

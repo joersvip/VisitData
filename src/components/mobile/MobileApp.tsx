@@ -23,6 +23,7 @@ import {
   Phone,
   Shield,
   UserCheck,
+  RefreshCw,
 } from 'lucide-react';
 import type {
   Petugas,
@@ -122,14 +123,22 @@ export const MobileApp: React.FC<MobileAppProps> = ({
   };
 
   const handleSubmitVisit = () => {
-    if (!checkInDone) return;
+    if (!checkInDone) {
+      alert('⚠️ Anda harus melakukan Check-In lokasi terlebih dahulu!');
+      return;
+    }
+
+    if (!temuan.trim() || !rekomendasi.trim()) {
+      alert('⚠️ Mohon lengkapi Ringkasan Temuan Audit dan Rekomendasi sebelum submit.');
+      return;
+    }
 
     const checkOutTimeStr = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
-
+    const count = kunjungans.length + 1;
     const newKunjungan: Kunjungan = {
       id: 'k-' + Date.now(),
       rencanaId: selectedRencana.id,
-      nomorKunjungan: `KJ-2026-${String(kunjungans.length + 125).padStart(5, '0')}`,
+      nomorKunjungan: `KJ-2026-${String(count + 125).padStart(5, '0')}`,
       tanggal: new Date().toISOString().split('T')[0],
       checkInTime,
       checkOutTime: checkOutTimeStr,
@@ -138,8 +147,8 @@ export const MobileApp: React.FC<MobileAppProps> = ({
       checkOutLat: currentLat,
       checkOutLng: currentLng,
       kondisiLokasi,
-      temuan: temuan || 'Pemeriksaan lapangan telah selesai dilakukan dengan lancar.',
-      rekomendasi: rekomendasi || 'Tindak lanjut pengawasan dilakukan pada jadwal berikutnya.',
+      temuan,
+      rekomendasi,
       prioritas,
       fotos,
       tandaTangan: signature,
@@ -190,6 +199,17 @@ export const MobileApp: React.FC<MobileAppProps> = ({
               </h1>
               <p className="text-[10px] text-slate-400">Kejaksaan RI Field Visit Management</p>
             </div>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => onRefreshData()}
+              className="flex items-center gap-1 bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/40 px-2 py-1 rounded-xl text-[10px] font-bold transition-all active:scale-95"
+              title="Singkronkan Data Sekarang"
+            >
+              <RefreshCw className="w-3 h-3 text-emerald-400 animate-spin-slow" />
+              <span>Synced DB</span>
+            </button>
           </div>
         </div>
       </header>

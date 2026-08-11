@@ -21,6 +21,7 @@ import {
   Phone,
   ShieldCheck,
   Mail,
+  RefreshCw,
 } from 'lucide-react';
 import type { Petugas, RencanaKunjungan, Kunjungan, HistoriLog, LokasiDikunjungi, AdminUser } from '../../types';
 import { StorageService } from '../../services/storage';
@@ -225,6 +226,22 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
         </div>
 
         <div className="flex flex-wrap items-center gap-3">
+          {/* Live DB Sync Indicator */}
+          <div className="flex items-center gap-2 bg-emerald-950/60 border border-emerald-500/40 px-3 py-1.5 rounded-2xl shadow-md text-xs">
+            <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse shrink-0" />
+            <span className="text-[11px] font-bold text-emerald-200 hidden md:inline">
+              DB Mobile & Web Terhubung
+            </span>
+            <button
+              type="button"
+              onClick={() => onRefreshData()}
+              className="p-1 text-emerald-300 hover:text-white rounded-lg hover:bg-emerald-800/40 transition-all ml-0.5"
+              title="Singkronkan Data Sekarang"
+            >
+              <RefreshCw className="w-3.5 h-3.5" />
+            </button>
+          </div>
+
           {currentAdmin && (
             <div className="flex items-center gap-2.5 bg-slate-950/90 p-2 rounded-2xl border border-amber-500/40 shadow-lg">
               <button

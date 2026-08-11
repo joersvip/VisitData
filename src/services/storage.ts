@@ -290,6 +290,23 @@ export class StorageService {
     }
   }
 
+  public static notifyDataChanged() {
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(
+        new CustomEvent('visitdata:sync_update', {
+          detail: { timestamp: new Date().toISOString() },
+        })
+      );
+      try {
+        const bc = new BroadcastChannel('visitdata_sync_channel');
+        bc.postMessage({ type: 'DATA_UPDATED', timestamp: new Date().toISOString() });
+        bc.close();
+      } catch {
+        // Fallback for environment without BroadcastChannel
+      }
+    }
+  }
+
   // --- ADMIN AUTHENTICATION ---
   public static getAdminSession(): AdminUser | null {
     const data = localStorage.getItem(STORAGE_KEYS.ADMIN_SESSION);
@@ -416,6 +433,7 @@ export class StorageService {
     };
     list.push(created);
     localStorage.setItem(STORAGE_KEYS.PETUGAS, JSON.stringify(list));
+    this.notifyDataChanged();
     return created;
   }
 
@@ -423,6 +441,7 @@ export class StorageService {
     const list = this.getPetugas();
     const filtered = list.filter((p) => p.id !== id);
     localStorage.setItem(STORAGE_KEYS.PETUGAS, JSON.stringify(filtered));
+    this.notifyDataChanged();
     return true;
   }
 
@@ -451,6 +470,7 @@ export class StorageService {
       deskripsi: `Membuat rencana kunjungan baru #${created.nomorRencana} untuk tanggal ${created.tanggal}`,
     });
 
+    this.notifyDataChanged();
     return created;
   }
 
@@ -460,6 +480,7 @@ export class StorageService {
     if (idx !== -1) {
       list[idx].status = status;
       localStorage.setItem(STORAGE_KEYS.RENCANA, JSON.stringify(list));
+      this.notifyDataChanged();
     }
   }
 
@@ -476,6 +497,8 @@ export class StorageService {
         lokasiNama: updated.lokasiNama,
         deskripsi: `Memperbarui detail rencana kunjungan #${updated.nomorRencana} (${updated.tanggal})`,
       });
+
+      this.notifyDataChanged();
       return true;
     }
     return false;
@@ -501,6 +524,7 @@ export class StorageService {
     if (kunjungan.status === 'SELESAI' && kunjungan.rencanaId) {
       this.updateRencanaStatus(kunjungan.rencanaId, 'SELESAI');
     }
+    this.notifyDataChanged();
   }
 
   public static getDatabaseLokasiDikunjungi(): LokasiDikunjungi[] {
