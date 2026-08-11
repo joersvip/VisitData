@@ -7,7 +7,18 @@ import { StorageService } from './services/storage';
 import type { Petugas, RencanaKunjungan, Kunjungan, HistoriLog } from './types';
 import confetti from 'canvas-confetti';
 
-const detectInitialDevice = (): 'MOBILE' | 'ADMIN' => {
+const getInitialViewMode = (): 'MOBILE' | 'ADMIN' => {
+  const path = window.location.pathname.toLowerCase();
+  const search = window.location.search.toLowerCase();
+  const hash = window.location.hash.toLowerCase();
+
+  if (path.includes('/mobile') || search.includes('mode=mobile') || hash === '#mobile') {
+    return 'MOBILE';
+  }
+  if (path.includes('/admin') || search.includes('mode=admin') || hash === '#admin') {
+    return 'ADMIN';
+  }
+
   if (Capacitor.isNativePlatform()) {
     return 'MOBILE';
   }
@@ -15,15 +26,11 @@ const detectInitialDevice = (): 'MOBILE' | 'ADMIN' => {
     navigator.userAgent
   );
   const isSmallScreen = window.innerWidth < 768;
-  if (isMobileUA || isSmallScreen) {
-    return 'MOBILE';
-  }
-  return 'ADMIN';
+  return isMobileUA || isSmallScreen ? 'MOBILE' : 'ADMIN';
 };
 
 export const App: React.FC = () => {
-  const [viewMode, setViewMode] = useState<'MOBILE' | 'ADMIN'>(detectInitialDevice);
-  const [hasManuallyToggled, setHasManuallyToggled] = useState<boolean>(false);
+  const [viewMode, setViewMode] = useState<'MOBILE' | 'ADMIN'>(getInitialViewMode);
   const [isOnline, setIsOnline] = useState<boolean>(true);
 
   // State data
@@ -45,20 +52,17 @@ export const App: React.FC = () => {
     StorageService.initStorage();
     refreshAllData();
 
-    const handleResize = () => {
-      if (!hasManuallyToggled && !Capacitor.isNativePlatform()) {
-        const isSmallScreen = window.innerWidth < 768;
-        setViewMode(isSmallScreen ? 'MOBILE' : 'ADMIN');
-      }
+    const handlePopState = () => {
+      setViewMode(getInitialViewMode());
     };
 
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, [hasManuallyToggled]);
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
 
   const handleSetViewMode = (mode: 'MOBILE' | 'ADMIN') => {
-    setHasManuallyToggled(true);
     setViewMode(mode);
+    window.history.pushState({}, '', mode === 'MOBILE' ? '?mode=mobile' : '?mode=admin');
   };
 
   const handleSync = () => {
@@ -77,18 +81,20 @@ export const App: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-[#090d16] text-slate-100 flex flex-col selection:bg-blue-500 selection:text-white">
-      {/* Top Header Navigation */}
-      <Header
-        viewMode={viewMode}
-        setViewMode={handleSetViewMode}
-        isOnline={isOnline}
-        setIsOnline={setIsOnline}
-        onSync={handleSync}
-        pendingSyncCount={pendingSyncCount}
-      />
+      {/* If in ADMIN Web Dashboard Mode, render top Desktop Header */}
+      {viewMode === 'ADMIN' && (
+        <Header
+          viewMode={viewMode}
+          setViewMode={handleSetViewMode}
+          isOnline={isOnline}
+          setIsOnline={setIsOnline}
+          onSync={handleSync}
+          pendingSyncCount={pendingSyncCount}
+        />
+      )}
 
       {/* Main View Container */}
-      <main className="flex-1">
+      <main className="flex-1 flex flex-col">
         {viewMode === 'MOBILE' ? (
           <MobileApp
             petugasList={petugasList}
@@ -97,6 +103,7 @@ export const App: React.FC = () => {
             logs={logs}
             isOnline={isOnline}
             onRefreshData={refreshAllData}
+            onSwitchToAdmin={() => handleSetViewMode('ADMIN')}
           />
         ) : (
           <AdminDashboard
@@ -109,10 +116,12 @@ export const App: React.FC = () => {
         )}
       </main>
 
-      {/* Footer Info */}
-      <footer className="py-4 text-center text-xs text-slate-500 border-t border-slate-800/60 mt-auto">
-        <p>VisitData Pro • Sistem Manajemen Kunjungan Lapangan End-to-End</p>
-      </footer>
+      {/* Footer Info (Only shown on Admin Web Dashboard view) */}
+      {viewMode === 'ADMIN' && (
+        <footer className="py-4 text-center text-xs text-slate-500 border-t border-slate-800/60 mt-auto">
+          <p>VisitData Pro • Sistem Manajemen Kunjungan Lapangan Kejaksaan RI</p>
+        </footer>
+      )}
     </div>
   );
 };

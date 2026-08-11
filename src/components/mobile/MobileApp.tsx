@@ -20,6 +20,7 @@ import {
   Sparkles,
   Camera,
   PenTool,
+  Monitor,
 } from 'lucide-react';
 import type {
   Petugas,
@@ -41,6 +42,7 @@ interface MobileAppProps {
   logs: HistoriLog[];
   isOnline: boolean;
   onRefreshData: () => void;
+  onSwitchToAdmin?: () => void;
 }
 
 export const MobileApp: React.FC<MobileAppProps> = ({
@@ -50,6 +52,7 @@ export const MobileApp: React.FC<MobileAppProps> = ({
   logs,
   isOnline,
   onRefreshData,
+  onSwitchToAdmin,
 }) => {
   const [activeTab, setActiveTab] = useState<'HOME' | 'CALENDAR' | 'FORM' | 'TIMELINE'>('HOME');
   const [activeRencanaId, setActiveRencanaId] = useState<string>(rencanas[0]?.id || '');
@@ -175,8 +178,19 @@ export const MobileApp: React.FC<MobileAppProps> = ({
         </div>
 
         {/* Status Bar */}
-        <div className="phone-status-bar">
-          <span>09:41</span>
+        <div className="phone-status-bar flex items-center justify-between px-3">
+          <div className="flex items-center gap-2">
+            <span>09:41</span>
+            {onSwitchToAdmin && (
+              <button
+                onClick={onSwitchToAdmin}
+                className="hidden sm:flex items-center gap-1 text-[10px] bg-slate-800/80 hover:bg-slate-700 text-amber-300 px-2 py-0.5 rounded-full border border-amber-500/30 transition-all"
+                title="Buka Web Dashboard (PC View)"
+              >
+                <Monitor className="w-3 h-3" /> Web Admin
+              </button>
+            )}
+          </div>
           <div className="flex items-center gap-1.5">
             <Signal className="w-3.5 h-3.5 text-amber-400" />
             <Wifi className="w-3.5 h-3.5 text-amber-400" />
