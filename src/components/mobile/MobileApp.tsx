@@ -184,34 +184,30 @@ export const MobileApp: React.FC<MobileAppProps> = ({
       {/* Fullscreen Mobile Content Container */}
       <main className="flex-1 w-full max-w-4xl mx-auto p-3.5 md:p-5 pb-28 overflow-y-auto space-y-4">
         {/* Header Officer Card */}
-          <div className="bg-slate-900/90 border border-amber-500/35 rounded-2xl p-3.5 flex items-center justify-between shadow-lg backdrop-blur-md">
-            <div className="flex items-center gap-3">
-              <div className="relative">
-                <img
-                  src={activeOfficer.fotoUrl}
-                  alt={activeOfficer.nama}
-                  className="w-11 h-11 rounded-full object-cover border-2 border-amber-500 shadow-md"
-                />
-                <span className="w-3 h-3 rounded-full bg-emerald-500 border-2 border-slate-900 absolute bottom-0 right-0" />
-              </div>
-              <div>
-                <h3 className="text-xs font-bold text-white flex items-center gap-1">
-                  {activeOfficer.nama} <Award className="w-3.5 h-3.5 text-amber-400" />
-                </h3>
-                <p className="text-[10px] text-slate-400">{activeOfficer.jabatan} • {activeOfficer.unit}</p>
-              </div>
+        <div className="bg-slate-900/90 border border-amber-500/35 rounded-2xl p-3.5 flex items-center justify-between shadow-lg backdrop-blur-md gap-2">
+          <div className="flex items-center gap-3 min-w-0">
+            <div className="relative shrink-0">
+              <img
+                src={activeOfficer.fotoUrl}
+                alt={activeOfficer.nama}
+                className="w-11 h-11 rounded-full object-cover border-2 border-amber-500 shadow-md"
+              />
+              <span className="w-3 h-3 rounded-full bg-emerald-500 border-2 border-slate-900 absolute bottom-0 right-0" />
             </div>
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-lg bg-slate-950 p-0.5 border border-amber-500/40 shadow-sm shrink-0">
-                <img src="/logo.png" alt="Logo Kejaksaan RI" className="w-full h-full object-contain" />
-              </div>
-              <div className="text-right">
-                <span className="text-[9px] font-extrabold px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/40 shadow-sm">
-                  KEJAKSAAN RI
-                </span>
-              </div>
+            <div className="min-w-0">
+              <h3 className="text-xs font-bold text-white flex items-center gap-1 truncate">
+                <span>{activeOfficer.nama}</span>
+                <Award className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+              </h3>
+              <p className="text-[10px] text-slate-400 truncate">{activeOfficer.jabatan} • {activeOfficer.unit}</p>
             </div>
           </div>
+          <div className="shrink-0">
+            <span className="text-[10px] font-extrabold px-2.5 py-1 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/40 shadow-sm whitespace-nowrap inline-block">
+              KEJAKSAAN RI
+            </span>
+          </div>
+        </div>
 
           {/* TAB 1: HOME DASHBOARD */}
           {activeTab === 'HOME' && (
@@ -375,53 +371,81 @@ export const MobileApp: React.FC<MobileAppProps> = ({
           {activeTab === 'FORM' && (
             <div className="space-y-3.5 animate-fade-in">
               {/* Step Flow Progress Bar */}
-              <div className="bg-slate-900/90 p-2.5 rounded-2xl border border-amber-500/30 flex items-center justify-between text-[10px] text-slate-300 font-bold">
-                <span className={`px-2 py-1 rounded-lg ${checkInDone ? 'bg-emerald-500/20 text-emerald-300' : 'bg-amber-500 text-slate-950'}`}>
+              <div className="bg-slate-900/95 p-2 rounded-2xl border border-amber-500/35 flex items-center justify-between text-slate-300 font-bold gap-1 shadow-md">
+                <span
+                  className={`flex-1 text-center py-2 px-1.5 rounded-xl text-[10px] sm:text-xs font-extrabold transition-all border ${
+                    checkInDone
+                      ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40 shadow-sm'
+                      : 'bg-amber-500 text-slate-950 border-amber-400 shadow-md shadow-amber-500/30'
+                  }`}
+                >
                   1. Check-In GPS
                 </span>
-                <span>➔</span>
-                <span className={`px-2 py-1 rounded-lg ${fotos.length > 0 ? 'bg-amber-500/20 text-amber-300' : 'bg-slate-800 text-slate-400'}`}>
+                <ChevronRight className="w-3.5 h-3.5 text-amber-500/60 shrink-0" />
+                <span
+                  className={`flex-1 text-center py-2 px-1.5 rounded-xl text-[10px] sm:text-xs font-extrabold transition-all border ${
+                    fotos.length > 0
+                      ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40 shadow-sm'
+                      : checkInDone
+                      ? 'bg-amber-500/20 text-amber-300 border-amber-500/40'
+                      : 'bg-slate-950 text-slate-500 border-slate-800'
+                  }`}
+                >
                   2. Geotag Foto
                 </span>
-                <span>➔</span>
-                <span className={`px-2 py-1 rounded-lg ${signature ? 'bg-amber-500/20 text-amber-300' : 'bg-slate-800 text-slate-400'}`}>
+                <ChevronRight className="w-3.5 h-3.5 text-amber-500/60 shrink-0" />
+                <span
+                  className={`flex-1 text-center py-2 px-1.5 rounded-xl text-[10px] sm:text-xs font-extrabold transition-all border ${
+                    signature
+                      ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40 shadow-sm'
+                      : fotos.length > 0
+                      ? 'bg-amber-500/20 text-amber-300 border-amber-500/40'
+                      : 'bg-slate-950 text-slate-500 border-slate-800'
+                  }`}
+                >
                   3. Tanda Tangan
                 </span>
               </div>
 
-              <div className="bg-slate-900/90 rounded-2xl p-3.5 border border-amber-500/30 space-y-2">
-                <span className="text-[10px] font-mono font-bold text-amber-400 block">
-                  KUNJUNGAN: {selectedRencana?.nomorRencana || 'RC-2026-0801'}
-                </span>
-                <h3 className="text-xs font-bold text-white">{selectedRencana?.lokasiNama}</h3>
+              {/* Location Card */}
+              <div className="bg-slate-900/90 rounded-2xl p-4 border border-amber-500/35 space-y-2.5 shadow-md">
+                <div className="flex items-center justify-between">
+                  <span className="text-[10px] font-mono font-extrabold text-amber-400 bg-amber-500/15 px-2.5 py-0.5 rounded-full border border-amber-500/30">
+                    KUNJUNGAN: {selectedRencana?.nomorRencana || 'RC-2026-0801'}
+                  </span>
+                  <span className="text-[10px] font-bold text-slate-400">
+                    {selectedRencana?.tanggal}
+                  </span>
+                </div>
+                <h3 className="text-sm sm:text-base font-extrabold text-white leading-snug">{selectedRencana?.lokasiNama}</h3>
 
                 {/* GPS Status Card */}
-                <div className="bg-slate-950/80 p-2.5 rounded-xl border border-amber-500/20 flex items-center justify-between text-[11px]">
-                  <div className="flex items-center gap-2 text-amber-400 font-bold">
-                    <MapPin className="w-4 h-4" />
-                    <span>GPS Active ({currentLat.toFixed(4)}, {currentLng.toFixed(4)})</span>
+                <div className="bg-slate-950/90 px-3 py-2.5 rounded-xl border border-amber-500/25 flex items-center justify-between text-xs shadow-inner gap-2">
+                  <div className="flex items-center gap-2 text-amber-400 font-bold min-w-0">
+                    <MapPin className="w-4 h-4 text-amber-400 shrink-0" />
+                    <span className="text-[11px] font-bold text-amber-300 truncate">GPS Active ({currentLat.toFixed(4)}, {currentLng.toFixed(4)})</span>
                   </div>
-                  <span className="text-[10px] text-slate-400 font-mono">Akurasi ~3m</span>
+                  <span className="text-[10px] text-slate-400 font-mono bg-slate-900 px-2 py-0.5 rounded border border-slate-800 shrink-0">Akurasi ~3m</span>
                 </div>
               </div>
 
               {/* Step 1: Check-In Button */}
               {!checkInDone ? (
-                <div className="bg-gradient-to-br from-amber-950/70 via-slate-900 to-slate-950 p-4.5 rounded-2xl border border-amber-500/40 text-center space-y-3.5 shadow-lg">
-                  <div className="w-14 h-14 rounded-full bg-amber-500/20 text-amber-400 mx-auto flex items-center justify-center border border-amber-500/40 shadow-inner">
-                    <MapPin className="w-7 h-7" />
+                <div className="bg-gradient-to-br from-amber-950/80 via-slate-900 to-slate-950 p-5 rounded-2xl border border-amber-500/40 text-center space-y-4 shadow-xl">
+                  <div className="w-16 h-16 rounded-full bg-amber-500/20 text-amber-400 mx-auto flex items-center justify-center border-2 border-amber-500/40 shadow-inner">
+                    <MapPin className="w-8 h-8 text-amber-400" />
                   </div>
-                  <div>
-                    <h4 className="text-xs font-extrabold text-white">Anda Belum Check-In di Lokasi Target</h4>
-                    <p className="text-[11px] text-slate-400 mt-1">
+                  <div className="space-y-1">
+                    <h4 className="text-sm font-extrabold text-white">Anda Belum Check-In di Lokasi Target</h4>
+                    <p className="text-xs text-slate-400 max-w-xs mx-auto leading-relaxed">
                       Tekan tombol di bawah untuk mencatat koordinat GPS & timestamp waktu kedatangan Anda.
                     </p>
                   </div>
                   <button
                     onClick={handleCheckIn}
-                    className="btn btn-primary w-full py-3 text-xs font-extrabold flex items-center justify-center gap-2 shadow-xl"
+                    className="btn btn-primary w-full py-3.5 text-xs sm:text-sm font-extrabold flex items-center justify-center gap-2 shadow-xl shadow-amber-500/25 active:scale-98 transition-all"
                   >
-                    <CheckCircle className="w-4 h-4" />
+                    <CheckCircle className="w-4.5 h-4.5 stroke-[2.5]" />
                     <span>Check-In GPS Sekarang</span>
                   </button>
                 </div>
