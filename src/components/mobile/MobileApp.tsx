@@ -10,9 +10,6 @@ import {
   Share2,
   FileCheck,
   ChevronRight,
-  BatteryCharging,
-  Signal,
-  Wifi,
   Filter,
   Award,
   Database,
@@ -20,7 +17,6 @@ import {
   Sparkles,
   Camera,
   PenTool,
-  Monitor,
 } from 'lucide-react';
 import type {
   Petugas,
@@ -42,7 +38,6 @@ interface MobileAppProps {
   logs: HistoriLog[];
   isOnline: boolean;
   onRefreshData: () => void;
-  onSwitchToAdmin?: () => void;
 }
 
 export const MobileApp: React.FC<MobileAppProps> = ({
@@ -52,7 +47,6 @@ export const MobileApp: React.FC<MobileAppProps> = ({
   logs,
   isOnline,
   onRefreshData,
-  onSwitchToAdmin,
 }) => {
   const [activeTab, setActiveTab] = useState<'HOME' | 'CALENDAR' | 'FORM' | 'TIMELINE'>('HOME');
   const [activeRencanaId, setActiveRencanaId] = useState<string>(rencanas[0]?.id || '');
@@ -182,23 +176,6 @@ export const MobileApp: React.FC<MobileAppProps> = ({
                 VisitData Mobile <span className="px-1.5 py-0.2 text-[9px] font-bold rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/40">ANDROID</span>
               </h1>
               <p className="text-[10px] text-slate-400">Kejaksaan RI Field Visit Management</p>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-2">
-            {onSwitchToAdmin && (
-              <button
-                onClick={onSwitchToAdmin}
-                className="flex items-center gap-1 text-xs bg-slate-900 hover:bg-slate-800 text-amber-300 px-3 py-1.5 rounded-lg border border-amber-500/30 transition-all font-bold shadow-sm"
-                title="Buka Web Dashboard (PC View)"
-              >
-                <Monitor className="w-3.5 h-3.5" /> <span className="hidden sm:inline">Web Admin</span>
-              </button>
-            )}
-            <div className="flex items-center gap-1.5 bg-slate-900/90 px-2.5 py-1.5 rounded-lg border border-slate-800 text-xs font-bold text-slate-400">
-              <Signal className="w-3.5 h-3.5 text-amber-400" />
-              <Wifi className="w-3.5 h-3.5 text-amber-400" />
-              <BatteryCharging className="w-4 h-4 text-emerald-400" />
             </div>
           </div>
         </div>

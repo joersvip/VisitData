@@ -72,7 +72,6 @@ export const App: React.FC = () => {
             logs={logs}
             isOnline={true}
             onRefreshData={refreshAllData}
-            onSwitchToAdmin={() => handleSetViewMode('ADMIN')}
           />
         ) : (
           <AdminDashboard
