@@ -10,20 +10,20 @@ interface MobileLoginProps {
 
 export const MobileLogin: React.FC<MobileLoginProps> = ({ petugasList, onLoginSuccess }) => {
   const defaultPetugas = petugasList[0] || {
-    id: 'p-1',
-    nama: 'Bambang Sutrisno, S.H., M.H.',
-    nip: '19780512 200312 1 002',
-    jabatan: 'Inspektur Muda Pidum & Pidsus',
-    unit: 'Inspektorat V Kejaksaan Agung RI',
-    telepon: '0812-9876-1001',
-    email: 'bambang.sutrisno@kejaksaan.go.id',
+    id: 'p-bratva',
+    nama: 'Bratva, S.H., M.H.',
+    nip: '19880512 201201 1 001',
+    jabatan: 'Administrator Utama / Pengawas Inspeksi',
+    unit: 'JAMWAS - Kejaksaan Agung RI',
+    telepon: '0812-3456-7890',
+    email: 'bratva@kejaksaan.go.id',
     fotoUrl: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&q=80&w=200',
     active: true,
-    totalKunjungan: 42,
+    totalKunjungan: 58,
   };
 
-  const [identifier, setIdentifier] = useState(defaultPetugas.email);
-  const [password, setPassword] = useState('123456');
+  const [identifier, setIdentifier] = useState(defaultPetugas.email || 'bratva@kejaksaan.go.id');
+  const [password, setPassword] = useState('12345');
   const [showPassword, setShowPassword] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
   const [isLoading, setIsLoading] = useState(false);
