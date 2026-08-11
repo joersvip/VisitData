@@ -22,7 +22,6 @@ import {
   Mail,
   Phone,
   Shield,
-  RefreshCw,
 } from 'lucide-react';
 import type {
   Petugas,
@@ -197,17 +196,6 @@ export const MobileApp: React.FC<MobileAppProps> = ({
               </h1>
               <p className="text-[10px] text-slate-400">Kejaksaan RI Field Visit Management</p>
             </div>
-          </div>
-
-          <div className="flex items-center gap-2">
-            <button
-              onClick={() => onRefreshData()}
-              className="flex items-center gap-1 bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/40 px-2 py-1 rounded-xl text-[10px] font-bold transition-all active:scale-95"
-              title="Singkronkan Data Sekarang"
-            >
-              <RefreshCw className="w-3 h-3 text-emerald-400 animate-spin-slow" />
-              <span>Synced DB</span>
-            </button>
           </div>
         </div>
       </header>
