@@ -61,4 +61,4 @@ VisitData/
 ---
 
 ### 🛡️ Lisensi & Hak Cipta
-© 2026 Inspektorat Kejaksaan Republik Indonesia. Hak Cipta Dilindungi Undang-Undang.
+© 2026 Bratva. Hak Cipta Dilindungi Undang-Undang.
