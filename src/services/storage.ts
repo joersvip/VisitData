@@ -292,6 +292,13 @@ export class StorageService {
     return created;
   }
 
+  public static deletePetugas(id: string): boolean {
+    const list = this.getPetugas();
+    const filtered = list.filter((p) => p.id !== id);
+    localStorage.setItem(STORAGE_KEYS.PETUGAS, JSON.stringify(filtered));
+    return true;
+  }
+
   // --- RENCANA KUNJUNGAN ---
   public static getRencana(): RencanaKunjungan[] {
     this.initStorage();

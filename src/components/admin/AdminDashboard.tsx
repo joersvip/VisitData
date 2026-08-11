@@ -15,6 +15,7 @@ import {
   Database,
   Building,
   Eye,
+  Trash2,
 } from 'lucide-react';
 import type { Petugas, RencanaKunjungan, Kunjungan, HistoriLog, LokasiDikunjungi } from '../../types';
 import { StorageService } from '../../services/storage';
@@ -115,6 +116,14 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
     setNamaPetugas('');
     setNipPetugas('');
     alert('✅ Master Data Petugas Baru Berhasil Ditambahkan!');
+  };
+
+  const handleDeletePetugas = (id: string, nama: string) => {
+    if (confirm(`Apakah Anda yakin ingin menghapus petugas "${nama}" dari Master Data?`)) {
+      StorageService.deletePetugas(id);
+      onRefreshData();
+      alert(`✅ Petugas "${nama}" berhasil dihapus.`);
+    }
   };
 
   const handleExportCSV = () => {
@@ -603,9 +612,18 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                   <div><strong className="text-slate-400">Total Visit:</strong> <span className="text-amber-400 font-bold">{p.totalKunjungan} Kali</span></div>
                 </div>
 
-                <span className="w-full block text-center py-1 rounded bg-amber-500/10 text-amber-300 border border-amber-500/30 text-[10px] font-bold">
-                  ● STATUS LAPANGAN AKTIF
-                </span>
+                <div className="flex items-center gap-2 pt-1">
+                  <span className="flex-1 text-center py-1 rounded bg-amber-500/10 text-amber-300 border border-amber-500/30 text-[10px] font-bold">
+                    ● STATUS LAPANGAN AKTIF
+                  </span>
+                  <button
+                    onClick={() => handleDeletePetugas(p.id, p.nama)}
+                    className="p-1.5 rounded bg-rose-500/10 hover:bg-rose-500/25 text-rose-400 border border-rose-500/30 text-[10px] font-bold transition-all flex items-center justify-center shrink-0"
+                    title="Hapus Petugas"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </button>
+                </div>
               </div>
             ))}
           </div>
