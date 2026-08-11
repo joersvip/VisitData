@@ -162,6 +162,7 @@ body {
     padding: 0;
     min-height: calc(100vh - 60px);
   }
+
   .phone-frame {
     max-width: 100%;
     height: calc(100vh - 60px);
@@ -169,6 +170,7 @@ body {
     border-radius: 0;
     box-shadow: none;
   }
+
   .phone-notch {
     display: none;
   }

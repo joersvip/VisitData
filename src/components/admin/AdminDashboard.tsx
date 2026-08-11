@@ -22,6 +22,7 @@ import {
   ShieldCheck,
   Mail,
   RefreshCw,
+  AlertTriangle,
 } from 'lucide-react';
 import type { Petugas, RencanaKunjungan, Kunjungan, HistoriLog, LokasiDikunjungi, AdminUser } from '../../types';
 import { StorageService } from '../../services/storage';
@@ -66,8 +67,9 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
   const latitude = -6.2088;
   const longitude = 106.8456;
 
-  // Form State: New Officer
+  // Form State: New Officer & Deletion
   const [showAddPetugasModal, setShowAddPetugasModal] = useState(false);
+  const [petugasToDelete, setPetugasToDelete] = useState<Petugas | null>(null);
   const [namaPetugas, setNamaPetugas] = useState('');
   const [nipPetugas, setNipPetugas] = useState('');
   const [jabatanPetugas, setJabatanPetugas] = useState('Inspector Lapangan');
@@ -172,12 +174,21 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
     alert('✅ Master Data Petugas Baru Berhasil Ditambahkan!');
   };
 
-  const handleDeletePetugas = (id: string, nama: string) => {
-    if (confirm(`Apakah Anda yakin ingin menghapus petugas "${nama}" dari Master Data?`)) {
-      StorageService.deletePetugas(id);
-      onRefreshData();
-      alert(`✅ Petugas "${nama}" berhasil dihapus.`);
+  const handleInitiateDeletePetugas = (p: Petugas) => {
+    if (p.id === 'p-bratva' || p.email?.toLowerCase() === 'bratva@kejaksaan.go.id') {
+      alert('⚠️ Akun Administrator Utama (Bratva, S.H., M.H.) dilindungi dan tidak dapat dihapus.');
+      return;
     }
+    setPetugasToDelete(p);
+  };
+
+  const handleConfirmDeletePetugas = () => {
+    if (!petugasToDelete) return;
+    const deletedName = petugasToDelete.nama;
+    StorageService.deletePetugas(petugasToDelete.id);
+    onRefreshData();
+    setPetugasToDelete(null);
+    alert(`✅ Petugas "${deletedName}" berhasil dihapus dari Master Data.`);
   };
 
   const handleExportCSV = () => {
@@ -736,9 +747,9 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                     ● STATUS LAPANGAN AKTIF
                   </span>
                   <button
-                    onClick={() => handleDeletePetugas(p.id, p.nama)}
+                    onClick={() => handleInitiateDeletePetugas(p)}
                     className="p-1.5 rounded bg-rose-500/10 hover:bg-rose-500/25 text-rose-400 border border-rose-500/30 text-[10px] font-bold transition-all flex items-center justify-center shrink-0"
-                    title="Hapus Petugas"
+                    title="Hapus Petugas Lapangan"
                   >
                     <Trash2 className="w-4 h-4" />
                   </button>
@@ -1143,6 +1154,52 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                   <LogOut className="w-4 h-4" /> Keluar Sesi Admin
                 </button>
               )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* MODAL: KONFIRMASI HAPUS PETUGAS */}
+      {petugasToDelete && (
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-fade-in">
+          <div className="bg-[#0b0f19] border border-rose-500/40 rounded-3xl max-w-md w-full p-6 shadow-2xl space-y-4 text-center">
+            <div className="w-14 h-14 bg-rose-500/10 border border-rose-500/30 rounded-2xl flex items-center justify-center mx-auto text-rose-400">
+              <AlertTriangle className="w-8 h-8" />
+            </div>
+
+            <div>
+              <h3 className="text-lg font-black text-white">Konfirmasi Hapus Petugas</h3>
+              <p className="text-xs text-slate-400 mt-1">
+                Apakah Anda yakin ingin menghapus data petugas berikut dari Master Data Inspeksi?
+              </p>
+            </div>
+
+            <div className="bg-slate-950/80 p-3.5 rounded-2xl border border-slate-800 text-left space-y-1.5 text-xs">
+              <div className="text-white font-bold text-sm">{petugasToDelete.nama}</div>
+              <div className="text-amber-400 font-semibold">{petugasToDelete.jabatan}</div>
+              <div className="text-slate-400 font-mono text-[11px]">NIP: {petugasToDelete.nip}</div>
+              <div className="text-slate-400 text-[11px]">Unit: {petugasToDelete.unit}</div>
+            </div>
+
+            <p className="text-[11px] text-rose-400/90 font-medium">
+              ⚠️ Tindakan ini akan secara permanen menghapus akses login & data profil petugas ini.
+            </p>
+
+            <div className="flex items-center gap-3 pt-2">
+              <button
+                type="button"
+                onClick={() => setPetugasToDelete(null)}
+                className="btn btn-secondary flex-1 py-2.5 text-xs font-bold"
+              >
+                Batal
+              </button>
+              <button
+                type="button"
+                onClick={handleConfirmDeletePetugas}
+                className="btn bg-rose-600 hover:bg-rose-700 text-white font-bold flex-1 py-2.5 text-xs shadow-lg shadow-rose-900/30"
+              >
+                Ya, Hapus Petugas
+              </button>
             </div>
           </div>
         </div>

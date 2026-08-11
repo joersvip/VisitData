@@ -462,8 +462,19 @@ export class StorageService {
 
   public static deletePetugas(id: string): boolean {
     const list = this.getPetugas();
+    const target = list.find((p) => p.id === id);
     const filtered = list.filter((p) => p.id !== id);
     localStorage.setItem(STORAGE_KEYS.PETUGAS, JSON.stringify(filtered));
+
+    if (target) {
+      this.addLog({
+        tipe: 'SYNC',
+        userNama: 'Admin System',
+        lokasiNama: 'Master Data Petugas',
+        deskripsi: `Menghapus data petugas ${target.nama} (NIP: ${target.nip}) dari sistem`,
+      });
+    }
+
     this.notifyDataChanged();
     return true;
   }
