@@ -15,7 +15,6 @@ import {
   Database,
   Building,
   Eye,
-  Smartphone,
 } from 'lucide-react';
 import type { Petugas, RencanaKunjungan, Kunjungan, HistoriLog, LokasiDikunjungi } from '../../types';
 import { StorageService } from '../../services/storage';
@@ -27,7 +26,6 @@ interface AdminDashboardProps {
   kunjungans: Kunjungan[];
   logs: HistoriLog[];
   onRefreshData: () => void;
-  onSwitchToMobile?: () => void;
 }
 
 export const AdminDashboard: React.FC<AdminDashboardProps> = ({
@@ -36,7 +34,6 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
   kunjungans,
   logs,
   onRefreshData,
-  onSwitchToMobile,
 }) => {
   const [activeTab, setActiveTab] = useState<'OVERVIEW' | 'SCHEDULER' | 'OFFICERS' | 'REPORTS' | 'LOCATIONS'>('OVERVIEW');
   const [selectedRencanaId, setSelectedRencanaId] = useState<string>(rencanas[0]?.id || '');
@@ -165,17 +162,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
           </div>
         </div>
 
-        <div className="flex flex-wrap items-center gap-3">
-          {onSwitchToMobile && (
-            <button
-              onClick={onSwitchToMobile}
-              className="btn btn-secondary border-amber-500/30 text-amber-300 font-bold hover:bg-amber-500/10"
-              title="Buka Tampilan Android App"
-            >
-              <Smartphone className="w-4 h-4 text-amber-400" /> Mode Mobile
-            </button>
-          )}
-
+        <div className="flex items-center gap-3">
           <button
             onClick={() => setShowAddRencanaModal(true)}
             className="btn btn-primary font-extrabold"

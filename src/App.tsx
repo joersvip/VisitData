@@ -55,11 +55,6 @@ export const App: React.FC = () => {
     return () => window.removeEventListener('popstate', handlePopState);
   }, []);
 
-  const handleSetViewMode = (mode: 'MOBILE' | 'ADMIN') => {
-    setViewMode(mode);
-    window.history.pushState({}, '', mode === 'MOBILE' ? '?mode=mobile' : '?mode=admin');
-  };
-
   return (
     <div className="min-h-screen bg-[#090d16] text-slate-100 flex flex-col selection:bg-blue-500 selection:text-white">
       {/* Main View Container */}
@@ -80,7 +75,6 @@ export const App: React.FC = () => {
             kunjungans={kunjungans}
             logs={logs}
             onRefreshData={refreshAllData}
-            onSwitchToMobile={() => handleSetViewMode('MOBILE')}
           />
         )}
       </main>
