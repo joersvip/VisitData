@@ -22,7 +22,6 @@ import {
   Mail,
   Phone,
   Shield,
-  UserCheck,
   RefreshCw,
 } from 'lucide-react';
 import type {
@@ -58,13 +57,12 @@ export const MobileApp: React.FC<MobileAppProps> = ({
   isOnline,
   currentOfficer,
   onLogout,
-  onSelectOfficer,
+  onSelectOfficer: _onSelectOfficer,
   onRefreshData,
 }) => {
   const [activeTab, setActiveTab] = useState<'HOME' | 'CALENDAR' | 'FORM' | 'TIMELINE' | 'PROFILE'>('HOME');
   const [activeRencanaId, setActiveRencanaId] = useState<string>(rencanas[0]?.id || '');
   const [historySubTab, setHistorySubTab] = useState<'LOGS' | 'LOCATIONS_DB'>('LOGS');
-  const [showOfficerSwitchModal, setShowOfficerSwitchModal] = useState(false);
 
   // Execution Form States
   const [checkInDone, setCheckInDone] = useState(false);
@@ -805,14 +803,6 @@ export const MobileApp: React.FC<MobileAppProps> = ({
 
               {/* Action Buttons */}
               <div className="space-y-2 pt-2">
-                <button
-                  type="button"
-                  onClick={() => setShowOfficerSwitchModal(true)}
-                  className="w-full btn btn-secondary py-3 text-xs font-bold flex items-center justify-center gap-2"
-                >
-                  <UserCheck className="w-4 h-4 text-amber-400" /> Ganti Akun Petugas Lapangan
-                </button>
-
                 {onLogout && (
                   <button
                     type="button"
@@ -826,62 +816,6 @@ export const MobileApp: React.FC<MobileAppProps> = ({
                     <LogOut className="w-4 h-4" /> Keluar Sesi Mobile
                   </button>
                 )}
-              </div>
-            </div>
-          )}
-
-          {/* Switch Officer Modal */}
-          {showOfficerSwitchModal && (
-            <div className="fixed inset-0 bg-slate-950/85 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-              <div className="glass-panel w-full max-w-sm p-5 space-y-4 animate-fade-in border-amber-500/40 shadow-2xl relative">
-                <div className="flex items-center justify-between border-b border-amber-500/20 pb-2">
-                  <span className="text-xs font-black text-amber-400 uppercase tracking-wider flex items-center gap-1.5">
-                    <UserCheck className="w-4 h-4 text-amber-400" /> Pilih Petugas Lapangan
-                  </span>
-                  <button
-                    onClick={() => setShowOfficerSwitchModal(false)}
-                    className="text-slate-400 hover:text-white text-base font-bold"
-                  >
-                    ✕
-                  </button>
-                </div>
-
-                <div className="space-y-2 max-h-60 overflow-y-auto pr-1">
-                  {petugasList.map((p) => (
-                    <button
-                      key={p.id}
-                      type="button"
-                      onClick={() => {
-                        StorageService.setOfficerSession(p);
-                        if (onSelectOfficer) onSelectOfficer(p);
-                        setShowOfficerSwitchModal(false);
-                        onRefreshData();
-                      }}
-                      className={`w-full text-left p-2.5 rounded-xl border transition-all flex items-center justify-between ${
-                        p.id === activeOfficer.id
-                          ? 'bg-amber-500/20 border-amber-400'
-                          : 'bg-slate-950/80 hover:bg-slate-900 border-slate-800'
-                      }`}
-                    >
-                      <div className="flex items-center gap-2.5">
-                        <img
-                          src={p.fotoUrl}
-                          alt={p.nama}
-                          className="w-8 h-8 rounded-full object-cover border border-amber-400"
-                        />
-                        <div>
-                          <div className="font-bold text-white text-xs">{p.nama}</div>
-                          <div className="text-[10px] text-slate-400">{p.jabatan}</div>
-                        </div>
-                      </div>
-                      {p.id === activeOfficer.id && (
-                        <span className="text-[9px] font-black text-amber-400 bg-amber-500/30 px-2 py-0.5 rounded-full border border-amber-500/50">
-                          Aktif
-                        </span>
-                      )}
-                    </button>
-                  ))}
-                </div>
               </div>
             </div>
           )}
