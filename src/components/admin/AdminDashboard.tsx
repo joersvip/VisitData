@@ -17,8 +17,12 @@ import {
   Eye,
   Trash2,
   Edit3,
+  LogOut,
+  Phone,
+  ShieldCheck,
+  Mail,
 } from 'lucide-react';
-import type { Petugas, RencanaKunjungan, Kunjungan, HistoriLog, LokasiDikunjungi } from '../../types';
+import type { Petugas, RencanaKunjungan, Kunjungan, HistoriLog, LokasiDikunjungi, AdminUser } from '../../types';
 import { StorageService } from '../../services/storage';
 import { VisitMap } from '../VisitMap';
 
@@ -27,6 +31,8 @@ interface AdminDashboardProps {
   rencanas: RencanaKunjungan[];
   kunjungans: Kunjungan[];
   logs: HistoriLog[];
+  currentAdmin?: AdminUser | null;
+  onLogout?: () => void;
   onRefreshData: () => void;
 }
 
@@ -35,11 +41,14 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
   rencanas,
   kunjungans,
   logs,
+  currentAdmin,
+  onLogout,
   onRefreshData,
 }) => {
   const [activeTab, setActiveTab] = useState<'OVERVIEW' | 'SCHEDULER' | 'OFFICERS' | 'REPORTS' | 'LOCATIONS'>('OVERVIEW');
   const [selectedRencanaId, setSelectedRencanaId] = useState<string>(rencanas[0]?.id || '');
   const [selectedLocationHistory, setSelectedLocationHistory] = useState<LokasiDikunjungi | null>(null);
+  const [showAdminProfileModal, setShowAdminProfileModal] = useState(false);
 
   // Form State: Schedule (Create & Edit)
   const [showAddRencanaModal, setShowAddRencanaModal] = useState(false);
@@ -215,7 +224,48 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
           </div>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-3">
+          {currentAdmin && (
+            <div className="flex items-center gap-2.5 bg-slate-950/90 p-2 rounded-2xl border border-amber-500/40 shadow-lg">
+              <button
+                onClick={() => setShowAdminProfileModal(true)}
+                className="flex items-center gap-2.5 hover:opacity-90 transition-all text-left"
+                title="Lihat Profil Lengkap Pegawai Admin"
+              >
+                <div className="relative">
+                  <img
+                    src={currentAdmin.fotoUrl}
+                    alt={currentAdmin.nama}
+                    className="w-9 h-9 rounded-full object-cover border-2 border-amber-400"
+                  />
+                  <span className="w-2.5 h-2.5 bg-emerald-500 rounded-full border-2 border-slate-950 absolute -bottom-0.5 -right-0.5" />
+                </div>
+                <div className="hidden sm:block">
+                  <div className="text-xs font-black text-white truncate max-w-[160px]">
+                    {currentAdmin.nama}
+                  </div>
+                  <div className="text-[10px] text-amber-400 font-semibold font-mono">
+                    NIP: {currentAdmin.nip}
+                  </div>
+                </div>
+              </button>
+
+              {onLogout && (
+                <button
+                  onClick={() => {
+                    if (confirm('Apakah Anda yakin ingin keluar dari sesi Admin?')) {
+                      onLogout();
+                    }
+                  }}
+                  className="p-1.5 bg-red-500/10 hover:bg-red-500/20 text-red-400 rounded-xl border border-red-500/30 transition-all ml-0.5"
+                  title="Keluar (Logout Admin)"
+                >
+                  <LogOut className="w-4 h-4" />
+                </button>
+              )}
+            </div>
+          )}
+
           <button
             onClick={handleOpenCreateRencana}
             className="btn btn-primary font-extrabold"
@@ -980,6 +1030,103 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* MODAL: PROFIL PEGAWAI ADMIN LOGGED IN */}
+      {showAdminProfileModal && currentAdmin && (
+        <div className="fixed inset-0 bg-slate-950/85 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="glass-panel w-full max-w-md p-6 space-y-5 animate-fade-in border-amber-500/50 shadow-2xl relative">
+            <div className="flex items-center justify-between border-b border-amber-500/20 pb-3">
+              <span className="text-xs font-black text-amber-400 uppercase tracking-wider flex items-center gap-1.5">
+                <ShieldCheck className="w-4 h-4 text-amber-400" /> Profil Pejabat Administrator
+              </span>
+              <button
+                onClick={() => setShowAdminProfileModal(false)}
+                className="text-slate-400 hover:text-white text-lg font-bold"
+              >
+                ✕
+              </button>
+            </div>
+
+            <div className="text-center space-y-3">
+              <div className="relative inline-block">
+                <img
+                  src={currentAdmin.fotoUrl}
+                  alt={currentAdmin.nama}
+                  className="w-24 h-24 rounded-full object-cover border-4 border-amber-400 shadow-xl mx-auto"
+                />
+                <span className="px-2.5 py-0.5 rounded-full bg-emerald-500 text-slate-950 text-[10px] font-black uppercase absolute bottom-0 right-0 border-2 border-slate-950">
+                  Sesi Aktif
+                </span>
+              </div>
+
+              <div>
+                <h3 className="text-base font-black text-white">{currentAdmin.nama}</h3>
+                <p className="text-xs text-amber-400 font-semibold mt-0.5">{currentAdmin.jabatan}</p>
+                <span className="inline-block text-[11px] font-mono text-slate-400 bg-slate-900 px-2.5 py-0.5 rounded-md border border-slate-800 mt-1">
+                  NIP: {currentAdmin.nip}
+                </span>
+              </div>
+            </div>
+
+            <div className="space-y-2.5 text-xs bg-slate-950/80 p-4 rounded-2xl border border-amber-500/20">
+              <div className="flex items-center justify-between border-b border-slate-800/80 pb-2">
+                <span className="text-slate-400 flex items-center gap-1.5 font-medium">
+                  <Building className="w-3.5 h-3.5 text-amber-400" /> Unit Kerja / Satker:
+                </span>
+                <span className="font-bold text-slate-200">{currentAdmin.unit}</span>
+              </div>
+
+              <div className="flex items-center justify-between border-b border-slate-800/80 pb-2">
+                <span className="text-slate-400 flex items-center gap-1.5 font-medium">
+                  <Mail className="w-3.5 h-3.5 text-amber-400" /> Email Resmi:
+                </span>
+                <span className="font-bold text-amber-300 font-mono">{currentAdmin.email}</span>
+              </div>
+
+              <div className="flex items-center justify-between border-b border-slate-800/80 pb-2">
+                <span className="text-slate-400 flex items-center gap-1.5 font-medium">
+                  <Phone className="w-3.5 h-3.5 text-amber-400" /> No. Telepon / WA:
+                </span>
+                <span className="font-bold text-slate-200">{currentAdmin.telepon}</span>
+              </div>
+
+              <div className="flex items-center justify-between border-b border-slate-800/80 pb-2">
+                <span className="text-slate-400 flex items-center gap-1.5 font-medium">
+                  <Shield className="w-3.5 h-3.5 text-amber-400" /> Role & Hak Akses:
+                </span>
+                <span className="font-black text-amber-400 bg-amber-500/20 px-2 py-0.5 rounded border border-amber-500/30">
+                  {currentAdmin.role}
+                </span>
+              </div>
+            </div>
+
+            <div className="flex items-center justify-between pt-2 border-t border-slate-800">
+              <button
+                type="button"
+                onClick={() => setShowAdminProfileModal(false)}
+                className="btn btn-secondary text-xs py-2 px-4 font-bold"
+              >
+                Tutup Profil
+              </button>
+
+              {onLogout && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowAdminProfileModal(false);
+                    if (confirm('Apakah Anda yakin ingin keluar dari sesi Admin?')) {
+                      onLogout();
+                    }
+                  }}
+                  className="btn bg-red-500/20 hover:bg-red-500/30 text-red-300 border border-red-500/40 text-xs py-2 px-4 font-bold inline-flex items-center gap-1.5"
+                >
+                  <LogOut className="w-4 h-4" /> Keluar Sesi Admin
+                </button>
+              )}
+            </div>
           </div>
         </div>
       )}

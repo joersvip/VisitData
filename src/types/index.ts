@@ -99,3 +99,15 @@ export interface LokasiDikunjungi {
   lastKondisi: string;
   kunjunganList: Kunjungan[];
 }
+
+export interface AdminUser {
+  id: string;
+  nama: string;
+  nip: string;
+  jabatan: string;
+  unit: string;
+  email: string;
+  telepon: string;
+  fotoUrl: string;
+  role: 'SUPER_ADMIN' | 'INSPEKTUR' | 'ADMIN_PEMBINAAN';
+}

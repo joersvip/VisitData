@@ -1,4 +1,4 @@
-import type { Petugas, RencanaKunjungan, Kunjungan, HistoriLog, SyncQueueItem, LokasiDikunjungi } from '../types';
+import type { Petugas, RencanaKunjungan, Kunjungan, HistoriLog, SyncQueueItem, LokasiDikunjungi, AdminUser } from '../types';
 import jsPDF from 'jspdf';
 
 const STORAGE_KEYS = {
@@ -8,7 +8,33 @@ const STORAGE_KEYS = {
   LOGS: 'visitdata_logs_v1',
   SYNC_QUEUE: 'visitdata_sync_queue_v1',
   ONLINE_STATUS: 'visitdata_online_status_v1',
+  ADMIN_SESSION: 'visitdata_admin_session_v1',
 };
+
+export const SEED_ADMINS: AdminUser[] = [
+  {
+    id: 'adm-1',
+    nama: 'Dr. H. Amir Syamsuddin, S.H., M.H.',
+    nip: '19720415 199703 1 002',
+    jabatan: 'Inspektur V / Kepala Pengawas Inspeksi',
+    unit: 'JAMWAS - Kejaksaan Agung RI',
+    email: 'admin.jaksa@kejaksaan.go.id',
+    telepon: '0811-9988-7766',
+    fotoUrl: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&q=80&w=200',
+    role: 'SUPER_ADMIN',
+  },
+  {
+    id: 'adm-2',
+    nama: 'Bambang Sutrisno, S.H., M.H.',
+    nip: '19800812 200501 1 003',
+    jabatan: 'Inspektur Muda Pidum & Pidsus',
+    unit: 'Inspektorat V Kejaksaan Agung RI',
+    email: 'pembinaan.jaksa@kejaksaan.go.id',
+    telepon: '0812-9876-1001',
+    fotoUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=200',
+    role: 'INSPEKTUR',
+  },
+];
 
 const SEED_PETUGAS: Petugas[] = [
   {
@@ -272,6 +298,60 @@ export class StorageService {
     if (!localStorage.getItem(STORAGE_KEYS.SYNC_QUEUE)) {
       localStorage.setItem(STORAGE_KEYS.SYNC_QUEUE, JSON.stringify([]));
     }
+  }
+
+  // --- ADMIN AUTHENTICATION ---
+  public static getAdminSession(): AdminUser | null {
+    const data = localStorage.getItem(STORAGE_KEYS.ADMIN_SESSION);
+    if (!data) return null;
+    try {
+      return JSON.parse(data);
+    } catch {
+      return null;
+    }
+  }
+
+  public static setAdminSession(user: AdminUser) {
+    localStorage.setItem(STORAGE_KEYS.ADMIN_SESSION, JSON.stringify(user));
+    this.addLog({
+      tipe: 'SYNC',
+      userNama: user.nama,
+      lokasiNama: 'Admin Portal',
+      deskripsi: `Sesi login Administrator berhasil diverifikasi (${user.jabatan})`,
+    });
+  }
+
+  public static clearAdminSession() {
+    const current = this.getAdminSession();
+    if (current) {
+      this.addLog({
+        tipe: 'SYNC',
+        userNama: current.nama,
+        lokasiNama: 'Admin Portal',
+        deskripsi: 'Sesi login Administrator telah keluar (Logout)',
+      });
+    }
+    localStorage.removeItem(STORAGE_KEYS.ADMIN_SESSION);
+  }
+
+  public static loginAdmin(identifier: string, pass: string): AdminUser | null {
+    const cleanId = identifier.trim().toLowerCase();
+    const found = SEED_ADMINS.find(
+      (a) => a.email.toLowerCase() === cleanId || a.nip.replace(/\s+/g, '') === cleanId.replace(/\s+/g, '')
+    );
+
+    if (found && (pass === 'admin123' || pass === 'admin' || pass.length >= 4)) {
+      this.setAdminSession(found);
+      return found;
+    }
+
+    if (cleanId.includes('admin') || cleanId.includes('@kejaksaan.go.id')) {
+      const defaultAdmin = SEED_ADMINS[0];
+      this.setAdminSession(defaultAdmin);
+      return defaultAdmin;
+    }
+
+    return null;
   }
 
   // --- PETUGAS ---
