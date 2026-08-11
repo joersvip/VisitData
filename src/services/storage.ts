@@ -336,6 +336,24 @@ export class StorageService {
     }
   }
 
+  public static updateRencana(updated: RencanaKunjungan): boolean {
+    const list = this.getRencana();
+    const idx = list.findIndex((r) => r.id === updated.id);
+    if (idx !== -1) {
+      list[idx] = { ...list[idx], ...updated };
+      localStorage.setItem(STORAGE_KEYS.RENCANA, JSON.stringify(list));
+
+      this.addLog({
+        tipe: 'RENCANA',
+        userNama: 'Admin System',
+        lokasiNama: updated.lokasiNama,
+        deskripsi: `Memperbarui detail rencana kunjungan #${updated.nomorRencana} (${updated.tanggal})`,
+      });
+      return true;
+    }
+    return false;
+  }
+
   // --- KUNJUNGAN (FIELD EXECUTIONS) ---
   public static getKunjungan(): Kunjungan[] {
     this.initStorage();
