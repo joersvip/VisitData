@@ -56,9 +56,13 @@ export const App: React.FC = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-[#090d16] text-slate-100 flex flex-col selection:bg-blue-500 selection:text-white">
+    <div
+      className={`bg-[#090d16] text-slate-100 flex flex-col selection:bg-blue-500 selection:text-white ${
+        viewMode === 'MOBILE' ? 'h-screen max-h-screen overflow-hidden' : 'min-h-screen'
+      }`}
+    >
       {/* Main View Container */}
-      <main className="flex-1 flex flex-col">
+      <main className="flex-1 flex flex-col overflow-hidden">
         {viewMode === 'MOBILE' ? (
           <MobileApp
             petugasList={petugasList}

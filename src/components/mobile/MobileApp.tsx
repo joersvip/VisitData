@@ -163,9 +163,9 @@ export const MobileApp: React.FC<MobileAppProps> = ({
   };
 
   return (
-    <div className="min-h-screen w-full bg-[#070a12] text-slate-100 flex flex-col animate-fade-in">
+    <div className="h-screen max-h-screen w-full bg-[#070a12] text-slate-100 flex flex-col overflow-hidden animate-fade-in">
       {/* Fullscreen Mobile App Header */}
-      <header className="sticky top-0 z-40 bg-[#0b0f19]/95 backdrop-blur-md border-b border-amber-500/20 px-4 py-2.5 shadow-lg">
+      <header className="shrink-0 bg-[#0b0f19]/95 backdrop-blur-md border-b border-amber-500/20 px-4 py-2.5 shadow-lg z-40">
         <div className="max-w-4xl mx-auto flex items-center justify-between gap-3">
           <div className="flex items-center gap-2.5">
             <div className="w-8 h-8 rounded-lg bg-slate-950 p-1 flex items-center justify-center border border-amber-500/40 shadow-sm shrink-0">
@@ -182,7 +182,7 @@ export const MobileApp: React.FC<MobileAppProps> = ({
       </header>
 
       {/* Fullscreen Mobile Content Container */}
-      <main className="flex-1 w-full max-w-4xl mx-auto p-3.5 md:p-5 pb-24 space-y-4">
+      <main className="flex-1 w-full max-w-4xl mx-auto p-3.5 md:p-5 pb-28 overflow-y-auto space-y-4">
         {/* Header Officer Card */}
           <div className="bg-slate-900/90 border border-amber-500/35 rounded-2xl p-3.5 flex items-center justify-between shadow-lg backdrop-blur-md">
             <div className="flex items-center gap-3">
@@ -681,7 +681,7 @@ export const MobileApp: React.FC<MobileAppProps> = ({
       </main>
 
       {/* Fullscreen Mobile Bottom Navigation Bar */}
-      <nav className="fixed bottom-0 left-0 right-0 z-50 bg-[#090d16]/95 backdrop-blur-md border-t border-amber-500/25 py-2">
+      <nav className="fixed bottom-0 inset-x-0 z-50 bg-[#090d16]/98 backdrop-blur-xl border-t border-amber-500/30 py-2.5 pb-[max(0.625rem,env(safe-area-inset-bottom))] shadow-[0_-10px_30px_rgba(0,0,0,0.9)]">
         <div className="max-w-4xl mx-auto grid grid-cols-4 items-center px-2">
           <button
             onClick={() => setActiveTab('HOME')}
