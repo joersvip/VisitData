@@ -220,93 +220,112 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
   return (
     <div className="max-w-7xl mx-auto p-4 sm:p-6 space-y-6 animate-fade-in">
       {/* Top Banner & Quick Controls */}
-      <div className="glass-panel p-6 flex flex-col md:flex-row md:items-center justify-between gap-4 border-amber-500/30">
-        <div className="flex items-center gap-4">
-          <div className="w-16 h-16 rounded-2xl bg-slate-950 p-2 flex items-center justify-center border border-amber-500/40 shadow-xl shadow-amber-500/20 shrink-0">
+      <div className="glass-panel p-5 lg:p-6 flex flex-col lg:flex-row lg:items-center justify-between gap-6 border-amber-500/30 bg-gradient-to-r from-[#0b0f19] via-[#090d16] to-[#0b101c] shadow-2xl relative overflow-hidden">
+        {/* Decorative background glow */}
+        <div className="absolute -top-24 -left-24 w-60 h-60 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute -bottom-24 -right-24 w-60 h-60 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
+
+        {/* Left Side: Brand Logo & Title */}
+        <div className="flex items-start sm:items-center gap-4 relative z-10">
+          <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-slate-950/90 p-2.5 flex items-center justify-center border border-amber-500/50 shadow-xl shadow-amber-500/15 shrink-0 transition-transform hover:scale-105">
             <img src="/logo.png" alt="Logo Kejaksaan RI" className="w-full h-full object-contain" />
           </div>
           <div>
-            <div className="flex items-center gap-2 text-amber-400 text-xs font-extrabold uppercase tracking-wider mb-0.5">
+            <div className="flex items-center gap-2 text-amber-400 text-xs font-extrabold uppercase tracking-widest mb-1">
               <Shield className="w-4 h-4 text-amber-400" /> PEMBINAAN KEJAKSAAN REPUBLIK INDONESIA
             </div>
-            <h2 className="text-xl sm:text-2xl font-bold text-white">Dashboard Monitoring Inspeksi Lapangan</h2>
-            <p className="text-xs text-slate-400 mt-1">
+            <h2 className="text-xl sm:text-2xl lg:text-3xl font-black text-white tracking-tight">
+              Dashboard Monitoring Inspeksi Lapangan
+            </h2>
+            <p className="text-xs text-slate-400 mt-1 max-w-2xl leading-relaxed">
               Pantau pergerakan tim petugas, jadwal kunjungan, database lokasi pernah dikunjungi, dan hasil laporan secara real-time.
             </p>
           </div>
         </div>
 
-        <div className="flex flex-wrap items-center gap-3">
-          {/* Live DB Sync Indicator */}
-          <div className="flex items-center gap-2 bg-emerald-950/60 border border-emerald-500/40 px-3 py-1.5 rounded-2xl shadow-md text-xs">
-            <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse shrink-0" />
-            <span className="text-[11px] font-bold text-emerald-200 hidden md:inline">
-              DB Mobile & Web Terhubung
-            </span>
-            <button
-              type="button"
-              onClick={() => onRefreshData()}
-              className="p-1 text-emerald-300 hover:text-white rounded-lg hover:bg-emerald-800/40 transition-all ml-0.5"
-              title="Singkronkan Data Sekarang"
-            >
-              <RefreshCw className="w-3.5 h-3.5" />
-            </button>
+        {/* Right Side: Organized Controls (2-Row Layout) */}
+        <div className="flex flex-col sm:items-end justify-center gap-3 shrink-0 relative z-10">
+          {/* Row 1: System Status & User Profile */}
+          <div className="flex flex-wrap items-center gap-2.5 sm:justify-end">
+            {/* Live DB Sync Indicator */}
+            <div className="flex items-center gap-2 bg-emerald-950/80 border border-emerald-500/40 px-3 py-1.5 rounded-xl shadow-md text-xs">
+              <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse shrink-0 shadow-lg shadow-emerald-400/50" />
+              <span className="text-[11px] font-bold text-emerald-200">
+                DB Mobile & Web Terhubung
+              </span>
+              <button
+                type="button"
+                onClick={() => onRefreshData()}
+                className="p-1 text-emerald-300 hover:text-white rounded-lg hover:bg-emerald-800/40 transition-all ml-0.5"
+                title="Singkronkan Data Sekarang"
+              >
+                <RefreshCw className="w-3.5 h-3.5" />
+              </button>
+            </div>
+
+            {/* Admin Profile Quick Card */}
+            {currentAdmin && (
+              <div className="flex items-center gap-2.5 bg-slate-950/90 p-1.5 pr-3 rounded-xl border border-amber-500/40 shadow-lg">
+                <button
+                  type="button"
+                  onClick={() => setShowAdminProfileModal(true)}
+                  className="flex items-center gap-2.5 hover:opacity-90 transition-all text-left"
+                  title="Lihat Profil Lengkap Pegawai Admin"
+                >
+                  <div className="relative">
+                    <img
+                      src={currentAdmin.fotoUrl}
+                      alt={currentAdmin.nama}
+                      className="w-9 h-9 rounded-lg object-cover border border-amber-400 shadow-md"
+                    />
+                    <span className="w-2.5 h-2.5 bg-emerald-500 rounded-full border-2 border-slate-950 absolute -bottom-0.5 -right-0.5" />
+                  </div>
+                  <div>
+                    <div className="text-xs font-black text-white truncate max-w-[150px]">
+                      {currentAdmin.nama}
+                    </div>
+                    <div className="text-[10px] text-amber-400 font-semibold font-mono">
+                      NIP: {currentAdmin.nip}
+                    </div>
+                  </div>
+                </button>
+
+                {onLogout && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (confirm('Apakah Anda yakin ingin keluar dari sesi Admin?')) {
+                        onLogout();
+                      }
+                    }}
+                    className="p-1.5 bg-red-500/10 hover:bg-red-500/25 text-red-400 rounded-lg border border-red-500/30 transition-all ml-1 shrink-0"
+                    title="Keluar (Logout Admin)"
+                  >
+                    <LogOut className="w-4 h-4" />
+                  </button>
+                )}
+              </div>
+            )}
           </div>
 
-          {currentAdmin && (
-            <div className="flex items-center gap-2.5 bg-slate-950/90 p-2 rounded-2xl border border-amber-500/40 shadow-lg">
-              <button
-                onClick={() => setShowAdminProfileModal(true)}
-                className="flex items-center gap-2.5 hover:opacity-90 transition-all text-left"
-                title="Lihat Profil Lengkap Pegawai Admin"
-              >
-                <div className="relative">
-                  <img
-                    src={currentAdmin.fotoUrl}
-                    alt={currentAdmin.nama}
-                    className="w-9 h-9 rounded-full object-cover border-2 border-amber-400"
-                  />
-                  <span className="w-2.5 h-2.5 bg-emerald-500 rounded-full border-2 border-slate-950 absolute -bottom-0.5 -right-0.5" />
-                </div>
-                <div className="hidden sm:block">
-                  <div className="text-xs font-black text-white truncate max-w-[160px]">
-                    {currentAdmin.nama}
-                  </div>
-                  <div className="text-[10px] text-amber-400 font-semibold font-mono">
-                    NIP: {currentAdmin.nip}
-                  </div>
-                </div>
-              </button>
+          {/* Row 2: Action Buttons */}
+          <div className="flex items-center gap-2.5 w-full sm:w-auto justify-stretch sm:justify-end">
+            <button
+              type="button"
+              onClick={handleOpenCreateRencana}
+              className="btn btn-primary flex-1 sm:flex-initial font-extrabold text-xs py-2.5 px-4 shadow-lg shadow-amber-500/20"
+            >
+              <Plus className="w-4 h-4 stroke-[3]" /> Buat Rencana Kunjungan
+            </button>
 
-              {onLogout && (
-                <button
-                  onClick={() => {
-                    if (confirm('Apakah Anda yakin ingin keluar dari sesi Admin?')) {
-                      onLogout();
-                    }
-                  }}
-                  className="p-1.5 bg-red-500/10 hover:bg-red-500/20 text-red-400 rounded-xl border border-red-500/30 transition-all ml-0.5"
-                  title="Keluar (Logout Admin)"
-                >
-                  <LogOut className="w-4 h-4" />
-                </button>
-              )}
-            </div>
-          )}
-
-          <button
-            onClick={handleOpenCreateRencana}
-            className="btn btn-primary font-extrabold"
-          >
-            <Plus className="w-4 h-4 stroke-[3]" /> Buat Rencana Kunjungan
-          </button>
-
-          <button
-            onClick={handleExportCSV}
-            className="btn btn-secondary"
-          >
-            <Download className="w-4 h-4 text-amber-400" /> Export Excel/CSV
-          </button>
+            <button
+              type="button"
+              onClick={handleExportCSV}
+              className="btn btn-secondary flex-1 sm:flex-initial text-xs py-2.5 px-4"
+            >
+              <Download className="w-4 h-4 text-amber-400" /> Export Excel/CSV
+            </button>
+          </div>
         </div>
       </div>
 
